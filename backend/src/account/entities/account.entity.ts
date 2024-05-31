@@ -24,21 +24,21 @@ export class Account {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, (user) => user.createdAccounts, { nullable: false })
   @JoinColumn({ name: 'created_by' })
   createdBy: User;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp', nullable: false })
   createdAt: Date;
 
-  @ManyToOne(() => User, { nullable: true })
+  @ManyToOne(() => User, (user) => user.updatedAccounts, { nullable: true })
   @JoinColumn({ name: 'updated_by' })
   updatedBy: User;
 
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp', nullable: true })
   updatedAt: Date;
 
-  @ManyToOne(() => User, { nullable: true })
+  @ManyToOne(() => User, (user) => user.deletedAccounts, { nullable: true })
   @JoinColumn({ name: 'deleted_by' })
   deletedBy: User;
 
