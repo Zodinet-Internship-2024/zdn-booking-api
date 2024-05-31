@@ -7,18 +7,24 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { Province } from './province.entity';
 import { District } from './district.entity';
 import { Ward } from './ward.entity';
+import { SportField } from 'src/sport-field/entities/sport-field.entity';
+import { User } from 'src/user/entities/user.entity';
 
-@Entity()
+@Entity(
+  {synchronize: true}
+)
 export class Location {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'uuid' })
-  sport_field_id: string;
+  @OneToOne(() => SportField, (sportField) => sportField.location)
+  @JoinColumn({ name: 'sport_field_id' })
+  sportField: SportField;
 
   @ManyToOne(() => Province, (province) => province.locations)
   @JoinColumn({ name: 'provice_id' })
@@ -44,18 +50,21 @@ export class Location {
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
-  @Column({ type: 'uuid' })
-  created_by: string;
+  @ManyToOne(() => User, (user) => user.createdLocations)
+  @JoinColumn({ name: 'created_by' })
+  createdBy: User;
 
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
   updated_at: Date;
 
-  @Column({ type: 'uuid', nullable: true })
-  updated_by: string;
+  @ManyToOne(() => User, (user) => user.updatedLocations)
+  @JoinColumn({ name: 'updated_by' })
+  updatedBy: User;
 
   @DeleteDateColumn({ type: 'timestamp', nullable: true })
   deleted_at: Date;
 
-  @Column({ type: 'uuid', nullable: true })
-  deleted_by: string;
+  @ManyToOne(() => User, (user) => user.deletedLocations)
+  @JoinColumn({ name: 'deleted_by' })
+  deletedBy: User;
 }

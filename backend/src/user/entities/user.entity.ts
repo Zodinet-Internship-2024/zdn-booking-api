@@ -1,4 +1,6 @@
 import { Account } from 'src/account/entities/account.entity';
+import { SportFieldImage } from 'src/sport-field/entities/sport-field-image.entity';
+import { SportField } from 'src/sport-field/entities/sport-field.entity';
 import {
   Entity,
   Column,
@@ -14,6 +16,8 @@ enum UserRole {
   user = 'user',
   owner = 'owner',
 }
+
+import { Location } from 'src/location/entities/location.entity';
 
 @Entity()
 export class User {
@@ -71,6 +75,42 @@ export class User {
 
   @OneToMany(() => Account, (account) => account.user)
   accounts: Account[];
+
+  @OneToMany(() => Location, (location) => location.createdBy)
+  createdLocations: Location[];
+
+  @OneToMany(() => Location, (location) => location.updatedBy)
+  updatedLocations: Location[];
+
+  @OneToMany(() => Location, (location) => location.deletedBy)
+  deletedLocations: Location[];
+
+  @OneToMany(() => SportField, (sportField) => sportField.createdBy)
+  createdSportFields: SportField[];
+
+  @OneToMany(() => SportField, (sportField) => sportField.updatedBy)
+  updatedSportFields: SportField[];
+
+  @OneToMany(() => SportField, (sportField) => sportField.deletedBy)
+  deletedSportFields: SportField[];
+
+  @OneToMany(
+    () => SportFieldImage,
+    (sportFieldImage) => sportFieldImage.createdBy,
+  )
+  createdSportFieldImages: SportFieldImage[];
+
+  @OneToMany(
+    () => SportFieldImage,
+    (sportFieldImage) => sportFieldImage.updatedBy,
+  )
+  updatedSportFieldImages: SportFieldImage[];
+
+  @OneToMany(
+    () => SportFieldImage,
+    (sportFieldImage) => sportFieldImage.deletedBy,
+  )
+  deletedSportFieldImages: SportFieldImage[];
 
   @OneToMany(() => Account, (account) => account.createdBy)
   createdAccounts: Account[];

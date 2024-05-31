@@ -1,13 +1,19 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { SportFieldType } from './sport-field-type.entity';
 import { SportFieldImage } from './sport-field-image.entity';
+import { Location } from 'src/location/entities/location.entity';
+import { CURRENT_TIMESTAMP } from 'src/constants/constants';
+import { User } from 'src/user/entities/user.entity';
 
 @Entity()
 export class SportField {
@@ -23,10 +29,10 @@ export class SportField {
   @Column({ length: 10, nullable: false })
   phone: string;
 
-  @Column({ type: 'timestamptz', nullable: false })
+  @Column({ type: 'timestamp', nullable: false })
   startTime: Date;
 
-  @Column({ type: 'timestamptz', nullable: false })
+  @Column({ type: 'timestamp', nullable: false })
   endTime: Date;
 
   @Column({ type: 'float', nullable: false })
@@ -47,22 +53,41 @@ export class SportField {
     (sportFieldImage) => sportFieldImage.sportField,
   )
   sportFieldImages: SportFieldImage[];
-  //   @Column()
-  //   field_type_id: string;
 
-  //   @Column()
-  //   owner_id: string;
+  @OneToOne(() => Location, (location) => location.sportField)
+  location: Location;
 
-  //   @CreateDateColumn({
-  //     type: 'timestamp',
-  //     default: () => CURRENT_TIME_STAMP,
-  //   })
-  //   public created_at: Date;
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamptz',
+    default: () => CURRENT_TIMESTAMP,
+  })
+  createdAt: Date;
 
-  //   @UpdateDateColumn({
-  //     type: 'timestamp',
-  //     default: () => CURRENT_TIME_STAMP,
-  //     onUpdate: CURRENT_TIME_STAMP,
-  //   })
-  //   public updated_at: Date;
+  @ManyToOne(() => User, (user) => user.createdSportFields)
+  @JoinColumn({ name: 'created_by' })
+  createdBy: User;
+
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamptz',
+    default: () => CURRENT_TIMESTAMP,
+    onUpdate: CURRENT_TIMESTAMP,
+  })
+  updatedAt: Date;
+
+  @ManyToOne(() => User, (user) => user.updatedSportFields)
+  @JoinColumn({ name: 'updated_by' })
+  updatedBy: User;
+
+  @Column({
+    name: 'deleted_at',
+    type: 'timestamp',
+    default: null,
+  })
+  deletedAt: Date;
+
+  @ManyToOne(() => User, (user) => user.deletedSportFields)
+  @JoinColumn({ name: 'deleted_by' })
+  deletedBy: User;
 }
