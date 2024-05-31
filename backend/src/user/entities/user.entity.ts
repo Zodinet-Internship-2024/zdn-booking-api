@@ -1,4 +1,6 @@
 import { Account } from 'src/account/entities/account.entity';
+import { SportFieldImage } from 'src/sport-field/entities/sport-field-image.entity';
+import { SportField } from 'src/sport-field/entities/sport-field.entity';
 import {
   Entity,
   Column,
@@ -16,7 +18,7 @@ enum UserRole {
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
   @Column({ type: 'character varying', length: 52, nullable: false })
   name: string;
 
@@ -66,4 +68,31 @@ export class User {
 
   @OneToMany(() => Account, (account) => account.user)
   accounts: Account[];
+
+  @OneToMany(() => SportField, (sportField) => sportField.createdBy)
+  createdSportFields: SportField[];
+
+  @OneToMany(() => SportField, (sportField) => sportField.updatedBy)
+  updatedSportFields: SportField[];
+
+  @OneToMany(() => SportField, (sportField) => sportField.deletedBy)
+  deletedSportFields: SportField[];
+
+  @OneToMany(
+    () => SportFieldImage,
+    (sportFieldImage) => sportFieldImage.createdBy,
+  )
+  createdSportFieldImages: SportFieldImage[];
+
+  @OneToMany(
+    () => SportFieldImage,
+    (sportFieldImage) => sportFieldImage.updatedBy,
+  )
+  updatedSportFieldImages: SportFieldImage[];
+
+  @OneToMany(
+    () => SportFieldImage,
+    (sportFieldImage) => sportFieldImage.deletedBy,
+  )
+  deletedSportFieldImages: SportFieldImage[];
 }
