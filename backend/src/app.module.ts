@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { UserModule } from './user/user.module';
 import { DatabaseModule } from './database/database.module';
 import { SportFieldModule } from './sport-field/sport-field.module';
 import { AccountModule } from './account/account.module';
+import { LocationModule } from './location/location.module';
 
 @Module({
   imports: [
@@ -14,6 +14,7 @@ import { AccountModule } from './account/account.module';
     SportFieldModule,
     AccountModule,
     UserModule,
+    LocationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
