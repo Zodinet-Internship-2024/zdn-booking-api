@@ -15,6 +15,8 @@ enum UserRole {
   owner = 'owner',
 }
 
+import { Location } from 'src/location/entities/location.entity';
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -68,6 +70,15 @@ export class User {
 
   @OneToMany(() => Account, (account) => account.user)
   accounts: Account[];
+
+  @OneToMany(() => Location, (location) => location.createdBy)
+  createdLocations: Location[];
+
+  @OneToMany(() => Location, (location) => location.updatedBy)
+  updatedLocations: Location[];
+
+  @OneToMany(() => Location, (location) => location.deletedBy)
+  deletedLocations: Location[];
 
   @OneToMany(() => SportField, (sportField) => sportField.createdBy)
   createdSportFields: SportField[];

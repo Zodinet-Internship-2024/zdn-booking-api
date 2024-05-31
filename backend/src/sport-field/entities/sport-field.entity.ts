@@ -5,11 +5,13 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { SportFieldType } from './sport-field-type.entity';
 import { SportFieldImage } from './sport-field-image.entity';
+import { Location } from 'src/location/entities/location.entity';
 import { CURRENT_TIME_STAMP } from 'src/constants/constants';
 import { User } from 'src/user/entities/user.entity';
 
@@ -51,6 +53,10 @@ export class SportField {
     (sportFieldImage) => sportFieldImage.sportField,
   )
   sportFieldImages: SportFieldImage[];
+
+  @OneToOne(() => Location , (location) => location.sportField)
+  location: Location;
+
 
   @CreateDateColumn({
     name: 'created_at',
