@@ -6,6 +6,7 @@ import { DatabaseModule } from './database/database.module';
 import { SportFieldModule } from './sport-field/sport-field.module';
 import { AccountModule } from './account/account.module';
 import { LocationModule } from './location/location.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
