@@ -10,7 +10,6 @@ import { SportFieldModule } from './sport-field/sport-field.module';
 import { FieldModule } from './field/field.module';
 import { BookingModule } from './booking/booking.module';
 import { LocationModule } from './location/location.module';
-import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
