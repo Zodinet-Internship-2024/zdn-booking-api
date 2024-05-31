@@ -17,25 +17,31 @@ enum AccountType {
 @Entity()
 export class Account {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
   @Column({ type: 'enum', enum: AccountType, nullable: false })
   name: AccountType;
   @ManyToOne(() => User, (user) => user.accounts, { nullable: false })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column({ type: 'uuid', nullable: false })
-  created_by: string;
-  @CreateDateColumn({ type: 'timestamp', nullable: false })
-  created_at: Date;
-  @UpdateDateColumn({ type: 'timestamp', nullable: true })
-  updated_at: Date;
-  @Column({ type: 'uuid', nullable: true })
-  updated_by: string;
+  @ManyToOne(() => User, { nullable: false })
+  @JoinColumn({ name: 'created_by' })
+  createdBy: User;
 
-  @Column({ type: 'timestamp', nullable: true })
-  deleted_at: Date;
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp', nullable: false })
+  createdAt: Date;
 
-  @Column({ type: 'uuid', nullable: true })
-  deleted_by: string;
+  @ManyToOne(() => User, { nullable: true })
+  @JoinColumn({ name: 'updated_by' })
+  updatedBy: User;
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp', nullable: true })
+  updatedAt: Date;
+
+  @ManyToOne(() => User, { nullable: true })
+  @JoinColumn({ name: 'deleted_by' })
+  deletedBy: User;
+
+  @Column({ name: 'deleted_at', type: 'timestamp', nullable: true })
+  deletedAt: Date;
 }

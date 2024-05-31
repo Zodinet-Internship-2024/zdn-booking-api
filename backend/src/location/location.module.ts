@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { LocationService } from './location.service';
 import { LocationController } from './location.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { District } from './entities/district.entity';
 import { Province } from './entities/province.entity';
 import { Ward } from './entities/ward.entity';
