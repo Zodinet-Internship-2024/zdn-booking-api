@@ -7,6 +7,7 @@ import {
   Timestamp,
 } from 'typeorm';
 import { Field } from 'src/field/entities/field.entity';
+import { CURRENT_TIMESTAMP } from 'src/constants/constants';
 // import { User } from 'src/user/entities/user.entity';
 
 export enum BookingStatus {
@@ -46,19 +47,19 @@ export class Booking {
   })
   status: string;
 
-  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP(7)' })
+  @Column({ type: 'timestamptz', default: () => CURRENT_TIMESTAMP })
   created_at: Timestamp;
 
   @Column('uuid')
   created_by: string;
 
-  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP(7)' })
+  @Column({ type: 'timestamptz', default: () => CURRENT_TIMESTAMP })
   updated_at: Timestamp;
 
   @Column('uuid', { nullable: true })
   updated_by: string;
 
-  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP(7)' })
+  @Column({ type: 'timestamp', default: null })
   deleted_at: Timestamp;
 
   @Column('uuid', { nullable: true })
