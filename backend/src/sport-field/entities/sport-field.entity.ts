@@ -12,7 +12,7 @@ import {
 import { SportFieldType } from './sport-field-type.entity';
 import { SportFieldImage } from './sport-field-image.entity';
 import { Location } from 'src/location/entities/location.entity';
-import { CURRENT_TIME_STAMP } from 'src/constants/constants';
+import { CURRENT_TIMESTAMP } from 'src/constants/constants';
 import { User } from 'src/user/entities/user.entity';
 
 @Entity()
@@ -54,14 +54,13 @@ export class SportField {
   )
   sportFieldImages: SportFieldImage[];
 
-  @OneToOne(() => Location , (location) => location.sportField)
+  @OneToOne(() => Location, (location) => location.sportField)
   location: Location;
-
 
   @CreateDateColumn({
     name: 'created_at',
-    type: 'timestamp',
-    default: () => CURRENT_TIME_STAMP,
+    type: 'timestamptz',
+    default: () => CURRENT_TIMESTAMP,
   })
   createdAt: Date;
 
@@ -71,9 +70,9 @@ export class SportField {
 
   @UpdateDateColumn({
     name: 'updated_at',
-    type: 'timestamp',
-    default: () => CURRENT_TIME_STAMP,
-    onUpdate: CURRENT_TIME_STAMP,
+    type: 'timestamptz',
+    default: () => CURRENT_TIMESTAMP,
+    onUpdate: CURRENT_TIMESTAMP,
   })
   updatedAt: Date;
 
@@ -81,7 +80,7 @@ export class SportField {
   @JoinColumn({ name: 'updated_by' })
   updatedBy: User;
 
-  @UpdateDateColumn({
+  @Column({
     name: 'deleted_at',
     type: 'timestamp',
     default: null,

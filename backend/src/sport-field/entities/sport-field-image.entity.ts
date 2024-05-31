@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { SportField } from './sport-field.entity';
-import { CURRENT_TIME_STAMP } from 'src/constants/constants';
+import { CURRENT_TIMESTAMP } from 'src/constants/constants';
 import { User } from 'src/user/entities/user.entity';
 
 @Entity()
@@ -28,8 +28,8 @@ export class SportFieldImage {
 
   @CreateDateColumn({
     name: 'created_at',
-    type: 'timestamp',
-    default: () => CURRENT_TIME_STAMP,
+    type: 'timestamptz',
+    default: () => CURRENT_TIMESTAMP,
   })
   createdAt: Date;
 
@@ -39,9 +39,9 @@ export class SportFieldImage {
 
   @UpdateDateColumn({
     name: 'updated_at',
-    type: 'timestamp',
-    default: () => CURRENT_TIME_STAMP,
-    onUpdate: CURRENT_TIME_STAMP,
+    type: 'timestamptz',
+    default: () => CURRENT_TIMESTAMP,
+    onUpdate: CURRENT_TIMESTAMP,
   })
   updatedAt: Date;
 
@@ -49,7 +49,7 @@ export class SportFieldImage {
   @JoinColumn({ name: 'updated_by' })
   updatedBy: User;
 
-  @UpdateDateColumn({
+  @Column({
     name: 'deleted_at',
     type: 'timestamp',
     default: null,
