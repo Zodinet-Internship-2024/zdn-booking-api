@@ -4,10 +4,12 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { SportFieldType } from './sport-field-type.entity';
 import { SportFieldImage } from './sport-field-image.entity';
+import { Location } from 'src/location/entities/location.entity';
 
 @Entity()
 export class SportField {
@@ -47,6 +49,10 @@ export class SportField {
     (sportFieldImage) => sportFieldImage.sportField,
   )
   sportFieldImages: SportFieldImage[];
+
+  @OneToOne(() => Location , (location) => location.sportField)
+  location: Location;
+
   //   @Column()
   //   field_type_id: string;
 
