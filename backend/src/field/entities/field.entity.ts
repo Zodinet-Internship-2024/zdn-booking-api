@@ -3,10 +3,8 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToOne,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
   OneToMany,
+  Timestamp,
 } from 'typeorm';
 // import { SportField } from 'src/sport-field/entities/sport-field.entity';
 // import { User } from 'src/user/entities/user.entity';
@@ -22,20 +20,20 @@ export class Field {
   @Column('character varying', { length: 255 })
   name: string;
 
-  @Column('date')
-  created_at: Date;
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP(7)' })
+  created_at: Timestamp;
 
   @Column('uuid')
   created_by: string;
 
-  @Column('date', { nullable: true })
-  updated_at: Date;
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP(7)' })
+  updated_at: Timestamp;
 
   @Column('uuid', { nullable: true })
   updated_by: string;
 
-  @Column('date', { nullable: true })
-  deleted_at: Date;
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP(7)' })
+  deleted_at: Timestamp;
 
   @Column('uuid', { nullable: true })
   deleted_by: string;
