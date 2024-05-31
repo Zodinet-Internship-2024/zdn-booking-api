@@ -8,6 +8,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 enum UserRole {
@@ -50,23 +52,26 @@ export class User {
     nullable: false,
   })
   password: string;
-  @CreateDateColumn({ type: 'timestamp', nullable: false })
-  created_at: Date;
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp', nullable: false })
+  createdAt: Date;
 
-  @Column({ type: 'uuid', nullable: false })
-  created_by: string;
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'created_by' })
+  createdBy: string;
 
-  @UpdateDateColumn({ type: 'timestamp', nullable: true })
-  updated_at: Date;
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp', nullable: true })
+  updatedAt: Date;
 
-  @Column({ type: 'uuid', nullable: true })
-  updated_by: string;
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'updated_by' })
+  updatedBy: string;
 
-  @Column({ type: 'timestamp', nullable: true })
-  deleted_at: Date;
+  @Column({ name: 'deleted_at', type: 'timestamp', nullable: true })
+  deletedAt: Date;
 
-  @Column({ type: 'uuid', nullable: true })
-  deleted_by: string;
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'deleted_by' })
+  deletedBy: string;
 
   @OneToMany(() => Account, (account) => account.user)
   accounts: Account[];
@@ -106,4 +111,13 @@ export class User {
     (sportFieldImage) => sportFieldImage.deletedBy,
   )
   deletedSportFieldImages: SportFieldImage[];
+
+  @OneToMany(() => Account, (account) => account.createdBy)
+  createdAccounts: Account[];
+
+  @OneToMany(() => Account, (account) => account.updatedBy)
+  updatedAccounts: Account[];
+
+  @OneToMany(() => Account, (account) => account.deletedBy)
+  deletedAccounts: Account[];
 }
