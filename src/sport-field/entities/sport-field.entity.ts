@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { SportFieldType } from './sport-field-type.entity';
 import { SportFieldImage } from './sport-field-image.entity';
+import { Field } from 'src/field/entities/field.entity';
 import { Location } from 'src/location/entities/location.entity';
 import { CURRENT_TIMESTAMP } from 'src/constants/constants';
 import { User } from 'src/user/entities/user.entity';
@@ -57,6 +58,11 @@ export class SportField {
   @OneToOne(() => Location, (location) => location.sportField)
   location: Location;
 
+  @OneToMany(() => Field, (field) => field.sportField)
+  fields: Field[];
+
+  //   @Column()
+  //   field_type_id: string;
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',

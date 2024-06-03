@@ -7,6 +7,7 @@ import {
   Timestamp,
 } from 'typeorm';
 import { Field } from 'src/field/entities/field.entity';
+import { User } from 'src/user/entities/user.entity';
 import { CURRENT_TIMESTAMP } from 'src/constants/constants';
 // import { User } from 'src/user/entities/user.entity';
 
@@ -47,21 +48,24 @@ export class Booking {
   })
   status: string;
 
-  @Column({ type: 'timestamptz', default: () => CURRENT_TIMESTAMP })
+  @Column('timestamp')
   created_at: Timestamp;
 
-  @Column('uuid')
-  created_by: string;
-
-  @Column({ type: 'timestamptz', default: () => CURRENT_TIMESTAMP })
+  @Column('timestamp')
   updated_at: Timestamp;
 
-  @Column('uuid', { nullable: true })
-  updated_by: string;
-
-  @Column({ type: 'timestamp', default: null })
+  @Column('timestamp')
   deleted_at: Timestamp;
 
-  @Column('uuid', { nullable: true })
-  deleted_by: string;
+  @ManyToOne(() => User, (user) => user.createdBookings, { nullable: false })
+  @JoinColumn({ name: 'created_by' })
+  createdBy: User;
+
+  @ManyToOne(() => User, (user) => user.updatedBookings, { nullable: true })
+  @JoinColumn({ name: 'updated_by' })
+  updatedBy: User;
+
+  @ManyToOne(() => User, (user) => user.deletedBookings, { nullable: true })
+  @JoinColumn({ name: 'deleted_by' })
+  deletedBy: User;
 }

@@ -8,6 +8,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 enum UserRole {
@@ -16,6 +18,8 @@ enum UserRole {
 }
 
 import { Location } from 'src/location/entities/location.entity';
+import { Booking } from 'src/booking/entities/booking.entity';
+import { Field } from 'src/field/entities/field.entity';
 
 @Entity()
 export class User {
@@ -50,23 +54,26 @@ export class User {
     nullable: false,
   })
   password: string;
-  @CreateDateColumn({ type: 'timestamp', nullable: false })
-  created_at: Date;
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp', nullable: false })
+  createdAt: Date;
 
-  @Column({ type: 'uuid', nullable: false })
-  created_by: string;
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'created_by' })
+  createdBy: string;
 
-  @UpdateDateColumn({ type: 'timestamp', nullable: true })
-  updated_at: Date;
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp', nullable: true })
+  updatedAt: Date;
 
-  @Column({ type: 'uuid', nullable: true })
-  updated_by: string;
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'updated_by' })
+  updatedBy: string;
 
-  @Column({ type: 'timestamp', nullable: true })
-  deleted_at: Date;
+  @Column({ name: 'deleted_at', type: 'timestamp', nullable: true })
+  deletedAt: Date;
 
-  @Column({ type: 'uuid', nullable: true })
-  deleted_by: string;
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'deleted_by' })
+  deletedBy: string;
 
   @OneToMany(() => Account, (account) => account.user)
   accounts: Account[];
@@ -80,6 +87,23 @@ export class User {
   @OneToMany(() => Location, (location) => location.deletedBy)
   deletedLocations: Location[];
 
+  @OneToMany(() => Booking, (booking) => booking.createdBy)
+  createdBookings: Booking[];
+
+  @OneToMany(() => Booking, (booking) => booking.updatedBy)
+  updatedBookings: Booking[];
+
+  @OneToMany(() => Booking, (booking) => booking.deletedBy)
+  deletedBookings: Booking[];
+
+  @OneToMany(() => Field, (field) => field.createdBy)
+  createdFields: Field[];
+
+  @OneToMany(() => Field, (field) => field.updatedBy)
+  updatedFields: Field[];
+
+  @OneToMany(() => Field, (field) => field.deletedBy)
+  deletedFields: Field[];
   @OneToMany(() => SportField, (sportField) => sportField.createdBy)
   createdSportFields: SportField[];
 
@@ -106,4 +130,13 @@ export class User {
     (sportFieldImage) => sportFieldImage.deletedBy,
   )
   deletedSportFieldImages: SportFieldImage[];
+
+  @OneToMany(() => Account, (account) => account.createdBy)
+  createdAccounts: Account[];
+
+  @OneToMany(() => Account, (account) => account.updatedBy)
+  updatedAccounts: Account[];
+
+  @OneToMany(() => Account, (account) => account.deletedBy)
+  deletedAccounts: Account[];
 }
