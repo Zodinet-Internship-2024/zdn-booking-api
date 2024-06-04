@@ -1,13 +1,6 @@
+import { BaseEntity } from 'src/common/entity/base.entity';
 import { Field } from 'src/modules/field/entities/field.entity';
-import { User } from 'src/modules/user/entities/user.entity';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  JoinColumn,
-  Timestamp,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 export enum BookingStatus {
   disabled = 'disabled',
@@ -17,10 +10,7 @@ export enum BookingStatus {
 }
 
 @Entity('booking') // Specify the table name (optional)
-export class Booking {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class Booking extends BaseEntity {
   @Column({ type: 'character varying', length: 10 })
   phone: string;
 
@@ -45,25 +35,4 @@ export class Booking {
     enum: BookingStatus,
   })
   status: string;
-
-  @Column('timestamp')
-  created_at: Timestamp;
-
-  @Column('timestamp')
-  updated_at: Timestamp;
-
-  @Column('timestamp')
-  deleted_at: Timestamp;
-
-  @ManyToOne(() => User, (user) => user.createdBookings, { nullable: false })
-  @JoinColumn({ name: 'created_by' })
-  createdBy: User;
-
-  @ManyToOne(() => User, (user) => user.updatedBookings, { nullable: true })
-  @JoinColumn({ name: 'updated_by' })
-  updatedBy: User;
-
-  @ManyToOne(() => User, (user) => user.deletedBookings, { nullable: true })
-  @JoinColumn({ name: 'deleted_by' })
-  deletedBy: User;
 }

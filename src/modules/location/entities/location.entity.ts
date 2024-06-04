@@ -1,25 +1,12 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-  JoinColumn,
-  OneToOne,
-} from 'typeorm';
-import { Province } from './province.entity';
-import { District } from './district.entity';
-import { Ward } from './ward.entity';
-import { User } from 'src/modules/user/entities/user.entity';
+import { BaseEntity } from 'src/common/entity/base.entity';
 import { SportField } from 'src/modules/sport-field/entities/sport-field.entity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import { District } from './district.entity';
+import { Province } from './province.entity';
+import { Ward } from './ward.entity';
 
 @Entity({ synchronize: true })
-export class Location {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class Location extends BaseEntity {
   @OneToOne(() => SportField, (sportField) => sportField.location)
   @JoinColumn({ name: 'sport_field_id' })
   sportField: SportField;
@@ -44,25 +31,4 @@ export class Location {
 
   @Column('float')
   latitude: number;
-
-  @CreateDateColumn({ type: 'timestamp' })
-  created_at: Date;
-
-  @ManyToOne(() => User, (user) => user.createdLocations)
-  @JoinColumn({ name: 'created_by' })
-  createdBy: User;
-
-  @UpdateDateColumn({ type: 'timestamp', nullable: true })
-  updated_at: Date;
-
-  @ManyToOne(() => User, (user) => user.updatedLocations)
-  @JoinColumn({ name: 'updated_by' })
-  updatedBy: User;
-
-  @DeleteDateColumn({ type: 'timestamp', nullable: true })
-  deleted_at: Date;
-
-  @ManyToOne(() => User, (user) => user.deletedLocations)
-  @JoinColumn({ name: 'deleted_by' })
-  deletedBy: User;
 }

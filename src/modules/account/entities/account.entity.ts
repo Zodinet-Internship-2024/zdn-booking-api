@@ -1,13 +1,6 @@
+import { BaseEntity } from 'src/common/entity/base.entity';
 import { User } from 'src/modules/user/entities/user.entity';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 enum AccountType {
   manual = 'manual',
@@ -15,33 +8,11 @@ enum AccountType {
   is_facebook = 'is_facebook',
 }
 @Entity()
-export class Account {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+export class Account extends BaseEntity {
   @Column({ type: 'enum', enum: AccountType, nullable: false })
   name: AccountType;
+
   @ManyToOne(() => User, (user) => user.accounts, { nullable: false })
   @JoinColumn({ name: 'user_id' })
   user: User;
-
-  @ManyToOne(() => User, (user) => user.createdAccounts, { nullable: false })
-  @JoinColumn({ name: 'created_by' })
-  createdBy: User;
-
-  @CreateDateColumn({ name: 'created_at', type: 'timestamp', nullable: false })
-  createdAt: Date;
-
-  @ManyToOne(() => User, (user) => user.updatedAccounts, { nullable: true })
-  @JoinColumn({ name: 'updated_by' })
-  updatedBy: User;
-
-  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp', nullable: true })
-  updatedAt: Date;
-
-  @ManyToOne(() => User, (user) => user.deletedAccounts, { nullable: true })
-  @JoinColumn({ name: 'deleted_by' })
-  deletedBy: User;
-
-  @Column({ name: 'deleted_at', type: 'timestamp', nullable: true })
-  deletedAt: Date;
 }

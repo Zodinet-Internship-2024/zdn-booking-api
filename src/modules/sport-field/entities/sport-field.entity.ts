@@ -1,26 +1,19 @@
+import { BaseEntity } from 'src/common/entity/base.entity';
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
-import { SportFieldType } from './sport-field-type.entity';
-import { SportFieldImage } from './sport-field-image.entity';
 import { Field } from '../../field/entities/field.entity';
 import { Location } from '../../location/entities/location.entity';
-import { User } from '../../user/entities/user.entity';
-import { CURRENT_TIMESTAMP } from 'src/constants/constants';
+import { SportFieldImage } from './sport-field-image.entity';
+import { SportFieldType } from './sport-field-type.entity';
 
 @Entity({ synchronize: true })
-export class SportField {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class SportField extends BaseEntity {
   @Column({ length: 255, nullable: false })
   name: string;
 
@@ -60,40 +53,4 @@ export class SportField {
 
   @OneToMany(() => Field, (field) => field.sportField)
   fields: Field[];
-
-  //   @Column()
-  //   field_type_id: string;
-  @CreateDateColumn({
-    name: 'created_at',
-    type: 'timestamptz',
-    default: () => CURRENT_TIMESTAMP,
-  })
-  createdAt: Date;
-
-  @ManyToOne(() => User, (user) => user.createdSportFields)
-  @JoinColumn({ name: 'created_by' })
-  createdBy: User;
-
-  @UpdateDateColumn({
-    name: 'updated_at',
-    type: 'timestamptz',
-    default: () => CURRENT_TIMESTAMP,
-    onUpdate: CURRENT_TIMESTAMP,
-  })
-  updatedAt: Date;
-
-  @ManyToOne(() => User, (user) => user.updatedSportFields)
-  @JoinColumn({ name: 'updated_by' })
-  updatedBy: User;
-
-  @Column({
-    name: 'deleted_at',
-    type: 'timestamp',
-    default: null,
-  })
-  deletedAt: Date;
-
-  @ManyToOne(() => User, (user) => user.deletedSportFields)
-  @JoinColumn({ name: 'deleted_by' })
-  deletedBy: User;
 }
