@@ -34,7 +34,7 @@ export class User extends BaseEntity {
     unique: true,
     nullable: false,
   })
-  phone: number;
+  phone: string;
 
   @AutoMap()
   @Column({ type: 'enum', enum: UserRole, nullable: false })
