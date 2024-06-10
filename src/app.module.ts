@@ -9,7 +9,7 @@ import { classes } from '@automapper/classes';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import typeorm from './config/typeorm.config';
+import typeorm from './configs/typeorm.config';
 
 import { HttpExceptionFilter } from './common/error/http-exception.filter';
 import { UpdateValuesMissingErrorFilter } from './common/error/exception-filter';
@@ -20,6 +20,8 @@ import { SportFieldModule } from './modules/sport-field/sport-field.module';
 import { FieldModule } from './modules/field/field.module';
 import { BookingModule } from './modules/booking/booking.module';
 import { LocationModule } from './modules/location/location.module';
+import { MailModule } from './modules/mail/mail.module';
+import { FirebaseModule } from './modules/firebase/firebase.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { TYPE_ORM_CONFIG } from './constants/constants';
 
@@ -28,6 +30,7 @@ import { TYPE_ORM_CONFIG } from './constants/constants';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [typeorm],
+      cache: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -44,6 +47,8 @@ import { TYPE_ORM_CONFIG } from './constants/constants';
     FieldModule,
     BookingModule,
     LocationModule,
+    MailModule,
+    FirebaseModule,
     AuthModule,
   ],
   controllers: [AppController],
