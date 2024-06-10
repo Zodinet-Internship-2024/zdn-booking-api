@@ -25,7 +25,6 @@ export class AuthService {
       const response = await this.requestKeycloakToken(formData);
       return response.data;
     } catch (error) {
-      console.error('Error during sign-in:', error);
       return new UnauthorizedException('Invalid credentials');
     }
   }
