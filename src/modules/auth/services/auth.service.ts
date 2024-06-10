@@ -1,8 +1,15 @@
-import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { SignInDto } from '../dto/sign-in.dto';
 import { UserService } from 'src/modules/user/service/user.service';
+import {
+  createRoleUserKeyClock,
+  getAccessTokenRealms,
+  getRoleIdKeyClock,
+  getUserIdKeyClock,
+  signUpKeyClock,
+} from '../api/auth';
+import { CreateAuthDto } from '../dto/create-auth.dto';
 
 @Injectable()
 export class AuthService {
