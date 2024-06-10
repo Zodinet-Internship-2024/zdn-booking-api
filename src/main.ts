@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { useContainer } from 'class-validator';
 import { HttpExceptionFilter } from './common/error/http-exception.filter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -14,6 +14,10 @@ async function bootstrap() {
     new HttpExceptionFilter(),
     new UpdateValuesMissingErrorFilter(),
   );
+
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Booking-App')
