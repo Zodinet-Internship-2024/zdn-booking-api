@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { RoleDto } from '../dto/role-auth.dtos';
+import { ROLE } from 'src/constants/constants';
 export const getAccessTokenRealms = async () => {
   const formData = new URLSearchParams();
   formData.append('grant_type', 'password');
@@ -31,6 +33,60 @@ export const signUpKeyClock = async (signUpInfo, accessToken) => {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    return data.data;
+  } catch (error) {
+    return error.response.data.errorMessage;
+  }
+};
+
+export const getUserIdKeyClock = async (email, accessToken) => {
+  try {
+    const data = await axios.get(
+      `https://internship-id.zodinet.tech/admin/realms/Booking/users?email=${email}`,
+
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+    return data.data;
+  } catch (error) {
+    return error.message;
+  }
+};
+export const getRoleIdKeyClock = async (
+  accessToken: string,
+  role: ROLE,
+): Promise<RoleDto> => {
+  try {
+    const data = await axios.get(
+      `https://internship-id.zodinet.tech/admin/realms/Booking/clients/${process.env.CLIENT_ID_UIID_KEYCLOAK}/roles/${role}`,
+
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+    return data.data;
+  } catch (error) {
+    return error.message;
+  }
+};
+
+export const createRoleUserKeyClock = async (userId, accessToken, dataBody) => {
+  try {
+    const data = await axios.post(
+      `https://internship-id.zodinet.tech/admin/realms/Booking/users/${userId}/role-mappings/clients/${process.env.CLIENT_ID_UIID_KEYCLOAK}`,
+      dataBody,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
         },
       },
     );

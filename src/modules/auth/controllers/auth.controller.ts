@@ -8,6 +8,7 @@ export class AuthController {
 
   @Post('/sign-up')
   signUp(@Body() createAuthDto: CreateAuthDto) {
+    console.log(createAuthDto);
     return this.authService.signUp(createAuthDto);
   }
 }
