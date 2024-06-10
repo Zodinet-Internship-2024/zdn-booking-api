@@ -12,12 +12,13 @@ export class BaseEntity {
   id: string;
 
   @AutoMap()
-  @CreateDateColumn({ name: 'created_at', type: 'timestamp', nullable: false })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp', nullable: true })
   createdAt: Date;
 
   @AutoMap()
   @Column({
     name: 'created_by',
+    nullable: true,
   })
   createdBy: string;
 
@@ -28,6 +29,7 @@ export class BaseEntity {
   @AutoMap()
   @Column({
     name: 'updated_by',
+    nullable: true,
   })
   updatedBy: string;
 
