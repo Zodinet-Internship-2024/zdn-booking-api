@@ -21,7 +21,7 @@ import { FieldModule } from './modules/field/field.module';
 import { BookingModule } from './modules/booking/booking.module';
 import { LocationModule } from './modules/location/location.module';
 import { MailModule } from './modules/mail/mail.module';
-
+import { AuthModule } from './modules/auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -44,6 +44,7 @@ import { MailModule } from './modules/mail/mail.module';
     BookingModule,
     LocationModule,
     MailModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
