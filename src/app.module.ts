@@ -10,7 +10,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import typeorm from './config/typeorm.config';
-import { DatabaseModule } from './database/database.module';
 
 import { HttpExceptionFilter } from './common/error/http-exception.filter';
 import { UpdateValuesMissingErrorFilter } from './common/error/exception-filter';
@@ -21,6 +20,8 @@ import { SportFieldModule } from './modules/sport-field/sport-field.module';
 import { FieldModule } from './modules/field/field.module';
 import { BookingModule } from './modules/booking/booking.module';
 import { LocationModule } from './modules/location/location.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { TYPE_ORM_CONFIG } from './constants/constants';
 
 @Module({
   imports: [
@@ -32,18 +33,18 @@ import { LocationModule } from './modules/location/location.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) =>
-        configService.get('typeorm'),
+        configService.get(TYPE_ORM_CONFIG),
     }),
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
-    DatabaseModule,
     UserModule,
     AccountModule,
     SportFieldModule,
     FieldModule,
     BookingModule,
     LocationModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
