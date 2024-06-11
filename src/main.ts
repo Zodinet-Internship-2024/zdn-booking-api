@@ -5,6 +5,7 @@ import { useContainer } from 'class-validator';
 import { HttpExceptionFilter } from './common/error/http-exception.filter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { UpdateValuesMissingErrorFilter } from './common/error/exception-filter';
+import 'reflect-metadata';
 import * as cookieParser from 'cookie-parser';
 
 const PORT = process.env.PORT || 5000;

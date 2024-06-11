@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { AutoMap } from '@automapper/classes';
 import { BaseEntity } from 'src/common/entity/base.entity';
 import { Field } from 'src/modules/field/entities/field.entity';
@@ -46,8 +47,4 @@ export class Booking extends BaseEntity {
     default: BookingStatus.booking,
   })
   status: string;
-
-  @ManyToOne(() => User, (user) => user.createdEntities)
-  @JoinColumn({ name: 'created_by' })
-  createdBy: User;
 }
