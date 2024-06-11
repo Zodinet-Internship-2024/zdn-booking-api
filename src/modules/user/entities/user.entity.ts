@@ -46,14 +46,6 @@ export class User extends BaseEntity {
   imageUrl: string;
 
   @AutoMap()
-  @Column({
-    type: 'character varying',
-    length: 64,
-    nullable: false,
-  })
-  password: string;
-
-  @AutoMap()
   @OneToMany(() => Account, (account) => account.user)
   accounts: Account[];
 
