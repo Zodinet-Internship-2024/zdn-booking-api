@@ -8,7 +8,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { FieldEntity } from '../../field/entities/field.entity';
-import { LocationEntity } from '../../location/entities/location.entity';
+import { Location } from '../../location/entities/location.entity';
 import { SportFieldImageEntity } from './sport-field-image.entity';
 import { SportFieldTypeEntity } from './sport-field-type.entity';
 
@@ -48,8 +48,8 @@ export class SportFieldEntity extends BaseEntity {
   )
   sportFieldImages: SportFieldImageEntity[];
 
-  @OneToOne(() => LocationEntity, (location) => location.sportField)
-  location: LocationEntity;
+  @OneToOne(() => Location, (location) => location.sportField)
+  location: Location;
 
   @OneToMany(() => FieldEntity, (field) => field.sportField)
   fields: FieldEntity[];

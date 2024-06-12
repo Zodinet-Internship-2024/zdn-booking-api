@@ -1,8 +1,8 @@
 import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
-import { LocationEntity } from './location.entity';
+import { Location } from './location.entity';
 
 @Entity()
-export class DistrictEntity {
+export class District {
   @PrimaryColumn({ type: 'text' })
   id: string;
 
@@ -12,6 +12,6 @@ export class DistrictEntity {
   @Column({ type: 'text' })
   province_id: string;
 
-  @OneToMany(() => LocationEntity, (location) => location.district)
-  locations: LocationEntity[];
+  @OneToMany(() => Location, (location) => location.district)
+  locations: Location[];
 }

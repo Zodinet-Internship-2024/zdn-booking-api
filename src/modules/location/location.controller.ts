@@ -1,17 +1,17 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
 } from '@nestjs/common';
-import { LocationService } from './location.service';
-import { CreateLocationDto } from './dto/create-location.dto';
-import { UpdateLocationDto } from './dto/update-location.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { API_BEARER_AUTH } from 'src/constants/constants';
+import { CreateLocationDto } from './dto/create-location.dto';
+import { UpdateLocationDto } from './dto/update-location.dto';
+import { LocationService } from './location.service';
 @ApiTags('location')
 @Controller('location')
 @ApiBearerAuth(API_BEARER_AUTH)
