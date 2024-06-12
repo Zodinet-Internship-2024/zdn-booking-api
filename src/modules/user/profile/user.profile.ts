@@ -4,6 +4,7 @@ import {
   createMap,
   forMember,
   ignore,
+  mapFrom,
   // forMember,
   // ignore,
   // mapFrom,
@@ -14,6 +15,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from '../entities/user.entity';
 import { ReadUserDTO } from '../dto/read-user-dto';
 import { CreateAuthDto } from 'src/modules/auth/dto/create-auth.dto';
+import { CreateUserDto } from '../dto/create-user.dto';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -34,6 +36,31 @@ export class UserProfile extends AutomapperProfile {
         CreateAuthDto,
         User,
         forMember((dest) => dest.id, ignore()),
+      );
+      createMap(
+        mapper,
+        User,
+        CreateUserDto,
+        forMember(
+          (destination: CreateUserDto) => destination.name,
+          mapFrom((source: User) => source.name),
+        ),
+        forMember(
+          (destination: CreateUserDto) => destination.email,
+          mapFrom((source: User) => source.email),
+        ),
+        forMember(
+          (destination: CreateUserDto) => destination.phone,
+          mapFrom((source: User) => source.phone),
+        ),
+        forMember(
+          (destination: CreateUserDto) => destination.role,
+          mapFrom((source: User) => source.role),
+        ),
+        forMember(
+          (destination: CreateUserDto) => destination.imageUrl,
+          mapFrom((source: User) => source.imageUrl),
+        ),
       );
     };
   }

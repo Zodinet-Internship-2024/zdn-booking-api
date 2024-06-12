@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { SignInDto } from '../dto/sign-in.dto';
 import { UserService } from 'src/modules/user/service/user.service';
@@ -58,7 +58,11 @@ export class AuthService {
       where: [{ phone: phone }, { email: email }],
     });
     if (userExist) {
-      return new ConflictException('Email or phone already exists');
+      return {
+        statusCode: 409,
+        status: 'Error',
+        message: 'Email or phone already exists',
+      };
     }
 
     const signUpKeyClockInfo = {
@@ -78,7 +82,7 @@ export class AuthService {
       ],
     };
     const data = await this.keycloakService.getAccessTokenRealms();
-    console.log(data.access_token);
+
     await this.keycloakService.signUpKeyCloak(
       signUpKeyClockInfo,
       data.access_token,
@@ -115,6 +119,9 @@ export class AuthService {
 
     this.accountRepository.save(newAccount);
 
-    return createdUser;
+    return {
+      status: 'Success',
+      message: 'Success register',
+    };
   }
 }
