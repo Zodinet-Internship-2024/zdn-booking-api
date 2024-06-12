@@ -10,8 +10,11 @@ import {
 import { BookingService } from '../services/booking.service';
 import { CreateBookingDto } from '../dto/create-booking.dto';
 import { UpdateBookingDto } from '../dto/update-booking.dto';
+import { API_BEARER_AUTH } from 'src/constants/constants';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('booking')
+@ApiBearerAuth(API_BEARER_AUTH)
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
 

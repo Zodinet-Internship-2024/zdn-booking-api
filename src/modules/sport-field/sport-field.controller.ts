@@ -10,9 +10,11 @@ import {
 import { SportFieldService } from './sport-field.service';
 import { CreateSportFieldDto } from './dto/create-sport-field.dto';
 import { UpdateSportFieldDto } from './dto/update-sport-field.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { API_BEARER_AUTH } from 'src/constants/constants';
 @ApiTags('sport-field')
 @Controller('sport-field')
+@ApiBearerAuth(API_BEARER_AUTH)
 export class SportFieldController {
   constructor(private readonly sportFieldService: SportFieldService) {}
 

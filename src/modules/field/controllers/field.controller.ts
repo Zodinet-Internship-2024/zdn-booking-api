@@ -10,9 +10,11 @@ import {
 import { FieldService } from './../services/field.service';
 import { CreateFieldDto } from '../dto/create-field.dto';
 import { UpdateFieldDto } from '../dto/update-field.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { API_BEARER_AUTH } from 'src/constants/constants';
 @ApiTags('field')
 @Controller('field')
+@ApiBearerAuth(API_BEARER_AUTH)
 export class FieldController {
   constructor(private readonly fieldService: FieldService) {}
 

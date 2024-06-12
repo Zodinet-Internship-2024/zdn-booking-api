@@ -1,7 +1,10 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
 import { MailService } from './mail.service';
+import { API_BEARER_AUTH } from 'src/constants/constants';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('mail')
+@ApiBearerAuth(API_BEARER_AUTH)
 export class MailController {
   constructor(private readonly mailService: MailService) {}
 

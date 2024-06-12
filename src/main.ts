@@ -32,6 +32,17 @@ async function bootstrap() {
     .setTitle('Booking-App')
     .setDescription('The booking API description')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        description: `[just text field] Please enter token in following format: Bearer <JWT>`,
+        name: 'Authorization',
+        bearerFormat: 'Bearer',
+        scheme: 'Bearer',
+        type: 'http',
+        in: 'Header',
+      },
+      'access-token',
+    )
     .addTag('booking')
     .build();
   const document = SwaggerModule.createDocument(app, config);
