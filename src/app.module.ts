@@ -1,37 +1,29 @@
 // import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { classes } from '@automapper/classes';
+import { AutomapperModule } from '@automapper/nestjs';
 import { Module } from '@nestjs/common';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AutomapperModule } from '@automapper/nestjs';
-import { classes } from '@automapper/classes';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import typeorm from './configs/typeorm.config';
 
-import { HttpExceptionFilter } from './common/error/http-exception.filter';
-import { UpdateValuesMissingErrorFilter } from './common/error/exception.filter';
-import { AllExceptionsFilter } from './common/error/all-exception.filter';
-
-import { UserModule } from './modules/user/user.module';
+import { KeycloakConnectModule } from 'nest-keycloak-connect';
+import { keycloakConfig } from './configs/keycloak-connection.config';
+import { TYPE_ORM_CONFIG } from './constants/constants';
 import { AccountModule } from './modules/account/account.module';
-import { SportFieldModule } from './modules/sport-field/sport-field.module';
-import { FieldModule } from './modules/field/field.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { BookingModule } from './modules/booking/booking.module';
+import { FieldModule } from './modules/field/field.module';
+import { FirebaseModule } from './modules/firebase/firebase.module';
 import { LocationModule } from './modules/location/location.module';
 import { MailModule } from './modules/mail/mail.module';
-import { FirebaseModule } from './modules/firebase/firebase.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { TYPE_ORM_CONFIG } from './constants/constants';
-import {
-  AuthGuard,
-  KeycloakConnectModule,
-  ResourceGuard,
-  RoleGuard,
-} from 'nest-keycloak-connect';
-import { keycloakConfig } from './configs/keycloak-connection.config';
+import { SportFieldModule } from './modules/sport-field/sport-field.module';
+import { UserModule } from './modules/user/user.module';
+import { FiltersProvider } from './providers/filters.provider';
+import { GuardsProvider } from './providers/guards.provider';
 
 @Module({
   imports: [
@@ -61,36 +53,6 @@ import { keycloakConfig } from './configs/keycloak-connection.config';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
-    },
-    {
-      provide: APP_FILTER,
-      useClass: UpdateValuesMissingErrorFilter,
-    },
-    {
-      provide: APP_FILTER,
-      useClass: AllExceptionsFilter,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: ResourceGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RoleGuard,
-    },
-  ],
+  providers: [AppService, ...FiltersProvider, ...GuardsProvider],
 })
-export class AppModule {
-  // configure(consumer: MiddlewareConsumer) {
-  //   consumer.apply(UserMiddleware).forRoutes('*');
-  // }
-}
+export class AppModule {}
