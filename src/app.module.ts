@@ -1,6 +1,6 @@
 // import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { Module } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AutomapperModule } from '@automapper/nestjs';
@@ -25,6 +25,13 @@ import { MailModule } from './modules/mail/mail.module';
 import { FirebaseModule } from './modules/firebase/firebase.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { TYPE_ORM_CONFIG } from './constants/constants';
+import {
+  AuthGuard,
+  KeycloakConnectModule,
+  ResourceGuard,
+  RoleGuard,
+} from 'nest-keycloak-connect';
+import { keycloakConfig } from './configs/keycloak-connection.config';
 
 @Module({
   imports: [
@@ -42,6 +49,7 @@ import { TYPE_ORM_CONFIG } from './constants/constants';
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
+    KeycloakConnectModule.register(keycloakConfig),
     UserModule,
     AccountModule,
     SportFieldModule,
@@ -66,6 +74,18 @@ import { TYPE_ORM_CONFIG } from './constants/constants';
     {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ResourceGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RoleGuard,
     },
   ],
 })
