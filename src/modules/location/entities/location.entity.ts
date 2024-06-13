@@ -1,5 +1,5 @@
 import { BaseEntity } from 'src/common/entity/base.entity';
-import { SportFieldEntity } from 'src/modules/sport-field/entities/sport-field.entity';
+import { SportField } from 'src/modules/sport-field/entities/sport-field.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { District } from './district.entity';
 import { Province } from './province.entity';
@@ -9,9 +9,9 @@ import { AutoMap } from '@automapper/classes';
 @Entity({ synchronize: true })
 export class Location extends BaseEntity {
   @AutoMap()
-  @OneToOne(() => SportFieldEntity, (sportField) => sportField.location)
+  @OneToOne(() => SportField, (sportField) => sportField.location)
   @JoinColumn({ name: 'sport_field_id' })
-  sportField: SportFieldEntity;
+  sportField: SportField;
 
   @AutoMap()
   @ManyToOne(() => Province, (province) => province.locations)

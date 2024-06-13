@@ -9,7 +9,7 @@ import {
   // MappingProfile,
 } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
-import { FieldEntity } from '../entities/field.entity';
+import { Field } from '../entities/field.entity';
 import { ReadFieldDto } from '../dto/read-field.dto';
 import { CreateFieldDto } from '../dto/create-field.dto';
 import { UpdateFieldDto } from '../dto/update-field.dto';
@@ -22,14 +22,14 @@ export class FieldProfile extends AutomapperProfile {
 
   override get profile() {
     return (mapper) => {
-      createMap(mapper, FieldEntity, ReadFieldDto);
+      createMap(mapper, Field, ReadFieldDto);
       createMap(
         mapper,
         CreateFieldDto,
-        FieldEntity,
+        Field,
         // forMember((dest) => dest.id, ignore()),
       );
-      createMap(mapper, UpdateFieldDto, FieldEntity);
+      createMap(mapper, UpdateFieldDto, Field);
     };
   }
 }

@@ -1,7 +1,7 @@
 import { AutoMap } from '@automapper/classes';
 import { BaseEntity } from 'src/common/entity/base.entity';
-import { AccountEntity } from 'src/modules/account/entities/account.entity';
-import { BookingEntity } from 'src/modules/booking/entities/booking.entity';
+import { Account } from 'src/modules/account/entities/account.entity';
+import { Booking } from 'src/modules/booking/entities/booking.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 enum UserRole {
@@ -10,7 +10,7 @@ enum UserRole {
 }
 
 @Entity()
-export class UserEntity extends BaseEntity {
+export class User extends BaseEntity {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -46,11 +46,11 @@ export class UserEntity extends BaseEntity {
   imageUrl: string;
 
   @AutoMap()
-  @OneToMany(() => AccountEntity, (account) => account.user)
-  accounts: AccountEntity[];
+  @OneToMany(() => Account, (account) => account.user)
+  accounts: Account[];
 
-  @OneToMany(() => BookingEntity, (booking) => booking.createdBy)
-  createdBookings: BookingEntity[];
+  @OneToMany(() => Booking, (booking) => booking.createdBy)
+  createdBookings: Booking[];
 
   // @OneToMany(() => BaseEntity, (entity) => entity.createdBy)
   // createdEntities: BaseEntity[];

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { AutoMap } from '@automapper/classes';
 import { BaseEntity } from 'src/common/entity/base.entity';
-import { FieldEntity } from 'src/modules/field/entities/field.entity';
-import { UserEntity } from 'src/modules/user/entities/user.entity';
+import { Field } from 'src/modules/field/entities/field.entity';
+import { User } from 'src/modules/user/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 export enum BookingStatus {
@@ -14,7 +14,7 @@ export enum BookingStatus {
 }
 
 @Entity('booking') // Specify the table name (optional)
-export class BookingEntity extends BaseEntity {
+export class Booking extends BaseEntity {
   @AutoMap()
   @Column({ type: 'character varying', length: 10 })
   phone: string;
@@ -24,9 +24,9 @@ export class BookingEntity extends BaseEntity {
   fullName: string;
 
   @AutoMap()
-  @ManyToOne(() => FieldEntity, (field) => field.bookings, { nullable: false })
+  @ManyToOne(() => Field, (field) => field.bookings, { nullable: false })
   @JoinColumn({ name: 'field_id' })
-  fieldId: FieldEntity;
+  fieldId: Field;
 
   @AutoMap()
   @Column({ type: 'date', name: 'start_time' })

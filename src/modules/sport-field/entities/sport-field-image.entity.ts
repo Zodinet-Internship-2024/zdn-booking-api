@@ -1,19 +1,16 @@
 import { BaseEntity } from 'src/common/entity/base.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { SportFieldEntity } from './sport-field.entity';
+import { SportField } from './sport-field.entity';
 
 @Entity()
-export class SportFieldImageEntity extends BaseEntity {
+export class SportFieldImage extends BaseEntity {
   @Column({ nullable: false })
   name: string;
 
   @Column({ nullable: false })
   url: string;
 
-  @ManyToOne(
-    () => SportFieldEntity,
-    (sportField) => sportField.sportFieldImages,
-  )
+  @ManyToOne(() => SportField, (sportField) => sportField.sportFieldImages)
   @JoinColumn({ name: 'sport_field_id' })
-  sportField: SportFieldEntity;
+  sportField: SportField;
 }
