@@ -92,7 +92,7 @@ export class AuthService {
       email,
       data.access_token,
     );
-
+    console.log(user);
     const roleUser = await this.keycloakService.getRoleIdKeyCloak(
       data.access_token,
       role,
@@ -111,6 +111,7 @@ export class AuthService {
       userRole,
     );
     const newUser = this.mapper.map(createAuthDto, CreateAuthDto, User);
+    newUser.id = user[0].id;
     const createdUser = await this.userRepository.save(newUser);
 
     const newAccount = new Account();
