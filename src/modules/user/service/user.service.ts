@@ -2,18 +2,24 @@ import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { UserEntity } from '../entities/user.entity';
 import { BaseService } from 'src/common/service/base.service';
+import { Repository } from 'typeorm';
+import { UpdateUserDto } from '../dto/update-user.dto';
+import { User } from '../entities/user.entity';
 
 @Injectable()
-export class UserService extends BaseService<UserEntity> {
+export class UserService extends BaseService<User> {
   constructor(
     @InjectMapper()
     private readonly classMapper: Mapper,
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {
     super(userRepository);
+  }
+
+  async updateProfile(id: string, data: UpdateUserDto) {
+    await this.userRepository.update(id, data);
+    return data;
   }
 }

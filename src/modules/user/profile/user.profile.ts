@@ -9,7 +9,7 @@ import {
   // MappingProfile,
 } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
-import { UserEntity } from '../entities/user.entity';
+import { User } from '../entities/user.entity';
 import { ReadUserDTO } from '../dto/read-user-dto';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class UserProfile extends AutomapperProfile {
     return (mapper) => {
       createMap(
         mapper,
-        UserEntity,
+        User,
         ReadUserDTO,
         // forMember((dest) => dest.password, ignore()),
       );
