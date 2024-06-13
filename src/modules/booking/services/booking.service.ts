@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@nestjs/common';
-import { CreateBookingDto } from './dto/create-booking.dto';
-import { UpdateBookingDto } from './dto/update-booking.dto';
+import { CreateBookingDto } from '../dto/create-booking.dto';
+import { UpdateBookingDto } from '../dto/update-booking.dto';
 
 @Injectable()
 export class BookingService {

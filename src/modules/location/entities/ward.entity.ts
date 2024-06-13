@@ -9,6 +9,9 @@ export class Ward {
   @Column({ type: 'text' })
   name: string;
 
+  @Column({ type: 'text' })
+  district_id: string;
+
   @OneToMany(() => Location, (location) => location.ward)
   locations: Location[];
 }

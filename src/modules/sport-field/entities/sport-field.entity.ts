@@ -7,13 +7,13 @@ import {
   OneToMany,
   OneToOne,
 } from 'typeorm';
-import { Field } from '../../field/entities/field.entity';
+import { FieldEntity } from '../../field/entities/field.entity';
 import { Location } from '../../location/entities/location.entity';
-import { SportFieldImage } from './sport-field-image.entity';
-import { SportFieldType } from './sport-field-type.entity';
+import { SportFieldImageEntity } from './sport-field-image.entity';
+import { SportFieldTypeEntity } from './sport-field-type.entity';
 
 @Entity({ synchronize: true })
-export class SportField extends BaseEntity {
+export class SportFieldEntity extends BaseEntity {
   @Column({ length: 255, nullable: false })
   name: string;
 
@@ -36,21 +36,21 @@ export class SportField extends BaseEntity {
   rule: string;
 
   @ManyToOne(
-    () => SportFieldType,
+    () => SportFieldTypeEntity,
     (sportFieldType) => sportFieldType.sportFields,
   )
   @JoinColumn({ name: 'sport_field_type_id' })
-  sportFieldType: SportFieldType;
+  sportFieldType: SportFieldTypeEntity;
 
   @OneToMany(
-    () => SportFieldImage,
+    () => SportFieldImageEntity,
     (sportFieldImage) => sportFieldImage.sportField,
   )
-  sportFieldImages: SportFieldImage[];
+  sportFieldImages: SportFieldImageEntity[];
 
   @OneToOne(() => Location, (location) => location.sportField)
   location: Location;
 
-  @OneToMany(() => Field, (field) => field.sportField)
-  fields: Field[];
+  @OneToMany(() => FieldEntity, (field) => field.sportField)
+  fields: FieldEntity[];
 }

@@ -3,16 +3,16 @@ import { InjectMapper } from '@automapper/nestjs';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../entities/user.entity';
+import { UserEntity } from '../entities/user.entity';
 import { BaseService } from 'src/common/service/base.service';
 
 @Injectable()
-export class UserService extends BaseService<User> {
+export class UserService extends BaseService<UserEntity> {
   constructor(
     @InjectMapper()
     private readonly classMapper: Mapper,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
   ) {
     super(userRepository);
   }
