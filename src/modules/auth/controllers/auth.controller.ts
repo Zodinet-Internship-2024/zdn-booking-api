@@ -5,6 +5,7 @@ import { Public } from 'nest-keycloak-connect';
 import { API_BEARER_AUTH } from 'src/constants/constants';
 import { SignInDto } from '../dto/sign-in.dto';
 import { AuthService } from '../services/auth.service';
+import { CreateAuthDto } from '../dto/create-auth.dto';
 
 @Controller({ path: '/auth', version: '1' })
 @ApiTags('auth')
@@ -26,5 +27,11 @@ export class AuthController {
         secure: process.env.NODE_ENV === 'production',
       })
       .json(data);
+  }
+
+  @Post('/sign-up')
+  signUp(@Body() createAuthDto: CreateAuthDto) {
+    console.log(createAuthDto);
+    return this.authService.signUp(createAuthDto);
   }
 }

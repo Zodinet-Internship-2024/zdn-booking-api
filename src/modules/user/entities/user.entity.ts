@@ -4,7 +4,7 @@ import { Account } from 'src/modules/account/entities/account.entity';
 import { Booking } from 'src/modules/booking/entities/booking.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-enum UserRole {
+export enum UserRole {
   user = 'user',
   owner = 'owner',
 }
@@ -42,7 +42,7 @@ export class User extends BaseEntity {
   role: UserRole;
 
   @AutoMap()
-  @Column({ name: 'image_url', type: 'text' })
+  @Column({ name: 'image_url', type: 'text', nullable: true })
   imageUrl: string;
 
   @AutoMap()

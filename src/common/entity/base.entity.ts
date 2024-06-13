@@ -30,12 +30,14 @@ export class BaseEntity {
   @AutoMap()
   @Column({
     name: 'created_by',
+    nullable: true,
   })
   createdBy: string;
 
   @AutoMap()
   @Column({
     name: 'updated_by',
+    nullable: true,
   })
   updatedBy: string;
 

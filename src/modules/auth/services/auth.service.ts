@@ -4,15 +4,31 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import axios from 'axios';
-import { UserService } from 'src/modules/user/service/user.service';
 import { SignInDto } from '../dto/sign-in.dto';
+import { UserService } from 'src/modules/user/service/user.service';
+import { KeycloakService } from '../api/auth';
+import { CreateAuthDto } from '../dto/create-auth.dto';
+import { Mapper } from '@automapper/core';
+import { InjectMapper } from '@automapper/nestjs';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
+import { AccountEntity } from 'src/modules/account/entities/account.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class AuthService {
   private keycloakHost: string;
   private realms: string;
 
-  constructor(private readonly userService: UserService) {
+  constructor(
+    private readonly userService: UserService,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(AccountEntity)
+    private readonly accountRepository: Repository<AccountEntity>,
+    @InjectMapper() private readonly mapper: Mapper,
+    private readonly keycloakService: KeycloakService,
+  ) {
     this.keycloakHost = process.env.KEYCLOAK_HOST;
     this.realms = process.env.KEYCLOAK_REALMS;
   }
@@ -64,5 +80,79 @@ export class AuthService {
         },
       },
     );
+  }
+
+  async signUp(createAuthDto: CreateAuthDto) {
+    const { name, email, phone, password, role, accountType } = createAuthDto;
+    const userExist = await this.userService.findOne({
+      where: [{ phone: phone }, { email: email }],
+    });
+    if (userExist) {
+      return {
+        statusCode: 409,
+        status: 'Error',
+        message: 'Email or phone already exists',
+      };
+    }
+
+    const signUpKeyClockInfo = {
+      username: email,
+      enabled: true,
+      email,
+      attributes: {
+        FullName: name,
+        phone,
+      },
+      credentials: [
+        {
+          type: 'password',
+          value: password,
+          temporary: false,
+        },
+      ],
+    };
+    const data = await this.keycloakService.getAccessTokenRealms();
+
+    await this.keycloakService.signUpKeyCloak(
+      signUpKeyClockInfo,
+      data.access_token,
+    );
+
+    const user = await this.keycloakService.getUserIdKeyCloak(
+      email,
+      data.access_token,
+    );
+    console.log(user);
+    const roleUser = await this.keycloakService.getRoleIdKeyCloak(
+      data.access_token,
+      role,
+    );
+
+    const userRole = [
+      {
+        id: roleUser.id,
+        name: role,
+      },
+    ];
+
+    await this.keycloakService.createRoleUserKeyCloak(
+      user[0].id,
+      data.access_token,
+      userRole,
+    );
+    const newUser = this.mapper.map(createAuthDto, CreateAuthDto, UserEntity);
+    newUser.id = user[0].id;
+    const createdUser = await this.userRepository.save(newUser);
+
+    const newAccount = new AccountEntity();
+    newAccount.name = accountType;
+    newAccount.user = createdUser;
+
+    this.accountRepository.save(newAccount);
+
+    return {
+      status: 'Success',
+      message: 'Success register',
+    };
   }
 }
