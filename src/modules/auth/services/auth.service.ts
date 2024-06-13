@@ -10,8 +10,8 @@ import { KeycloakService } from '../api/auth';
 import { CreateAuthDto } from '../dto/create-auth.dto';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { UserEntity } from 'src/modules/user/entities/user.entity';
-import { AccountEntity } from 'src/modules/account/entities/account.entity';
+import { User } from 'src/modules/user/entities/user.entity';
+import { Account } from 'src/modules/account/entities/account.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -22,10 +22,10 @@ export class AuthService {
 
   constructor(
     private readonly userService: UserService,
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
-    @InjectRepository(AccountEntity)
-    private readonly accountRepository: Repository<AccountEntity>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(Account)
+    private readonly accountRepository: Repository<Account>,
     @InjectMapper() private readonly mapper: Mapper,
     private readonly keycloakService: KeycloakService,
   ) {
@@ -140,11 +140,11 @@ export class AuthService {
       data.access_token,
       userRole,
     );
-    const newUser = this.mapper.map(createAuthDto, CreateAuthDto, UserEntity);
+    const newUser = this.mapper.map(createAuthDto, CreateAuthDto, User);
     newUser.id = user[0].id;
     const createdUser = await this.userRepository.save(newUser);
 
-    const newAccount = new AccountEntity();
+    const newAccount = new Account();
     newAccount.name = accountType;
     newAccount.user = createdUser;
 

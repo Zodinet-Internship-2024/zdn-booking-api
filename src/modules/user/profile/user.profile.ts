@@ -34,32 +34,32 @@ export class UserProfile extends AutomapperProfile {
       createMap(
         mapper,
         CreateAuthDto,
-        UserEntity,
+        User,
         forMember((dest) => dest.id, ignore()),
       );
       createMap(
         mapper,
-        UserEntity,
+        User,
         CreateUserDto,
         forMember(
           (destination: CreateUserDto) => destination.name,
-          mapFrom((source: UserEntity) => source.name),
+          mapFrom((source: User) => source.name),
         ),
         forMember(
           (destination: CreateUserDto) => destination.email,
-          mapFrom((source: UserEntity) => source.email),
+          mapFrom((source: User) => source.email),
         ),
         forMember(
           (destination: CreateUserDto) => destination.phone,
-          mapFrom((source: UserEntity) => source.phone),
+          mapFrom((source: User) => source.phone),
         ),
         forMember(
           (destination: CreateUserDto) => destination.role,
-          mapFrom((source: UserEntity) => source.role),
+          mapFrom((source: User) => source.role),
         ),
         forMember(
           (destination: CreateUserDto) => destination.imageUrl,
-          mapFrom((source: UserEntity) => source.imageUrl),
+          mapFrom((source: User) => source.imageUrl),
         ),
       );
     };
