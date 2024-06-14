@@ -108,4 +108,27 @@ export class KeycloakService {
       return error.response.data.errorMessage;
     }
   }
+
+  async updateUserKeyCloak(
+    userId: string,
+    dataBody,
+    accessToken: string,
+  ): Promise<any> {
+    console.log(userId);
+    console.log(process.env.CLIENT_ID_UIID_KEYCLOAK);
+    try {
+      const data = await axios.put(
+        `${this.keycloakUrl}/admin/realms/Booking/users/${userId}`,
+        dataBody,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+      return data.data;
+    } catch (error) {
+      return error.response.data.errorMessage;
+    }
+  }
 }

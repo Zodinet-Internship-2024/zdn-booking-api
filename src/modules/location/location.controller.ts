@@ -8,10 +8,11 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { API_BEARER_AUTH } from 'src/constants/constants';
+import { API_BEARER_AUTH, ROLE } from 'src/constants/constants';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
 import { LocationService } from './location.service';
+import { Roles } from 'nest-keycloak-connect';
 @ApiTags('location')
 @Controller('location')
 @ApiBearerAuth(API_BEARER_AUTH)
@@ -24,6 +25,9 @@ export class LocationController {
   }
 
   @Get()
+  @Roles({
+    roles: [ROLE.USER],
+  })
   findAll() {
     return this.locationService.findAll();
   }

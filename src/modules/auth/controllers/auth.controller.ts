@@ -30,6 +30,7 @@ export class AuthController {
   }
 
   @Post('/sign-up')
+  @Public()
   signUp(@Body() createAuthDto: CreateAuthDto) {
     console.log(createAuthDto);
     return this.authService.signUp(createAuthDto);

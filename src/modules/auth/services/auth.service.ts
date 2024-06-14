@@ -36,6 +36,7 @@ export class AuthService {
     await this.populateEmailIfPhoneProvided(signInDto);
 
     const formData = this.createSignInFormData(signInDto);
+    console.log(formData);
 
     try {
       const response = await this.requestKeycloakToken(formData);
@@ -113,6 +114,7 @@ export class AuthService {
     };
     const data = await this.keycloakService.getAccessTokenRealms();
 
+    console.log(data.access_token);
     await this.keycloakService.signUpKeyCloak(
       signUpKeyClockInfo,
       data.access_token,
