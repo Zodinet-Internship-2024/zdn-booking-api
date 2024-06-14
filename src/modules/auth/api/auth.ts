@@ -11,9 +11,9 @@ export class KeycloakService {
   async getAccessTokenRealms(): Promise<{ access_token: string }> {
     const formData = new URLSearchParams();
     formData.append('grant_type', 'password');
-    formData.append('client_id', process.env.CLIENT_ID_KEYCLOCK);
-    formData.append('username', process.env.USER_NAME_KEYCLOCK);
-    formData.append('password', process.env.PASSWORDS_KEYCLOCK);
+    formData.append('client_id', process.env.KEYCLOAK_CLIENT_ID);
+    formData.append('username', process.env.KEYCLOAK_USERNAME);
+    formData.append('password', process.env.KEYCLOAK_PASSWORD);
 
     try {
       const data = await axios.post(
@@ -72,7 +72,7 @@ export class KeycloakService {
   ): Promise<RoleDto> {
     try {
       const data = await axios.get(
-        `${this.keycloakUrl}/admin/realms/Booking/clients/${process.env.CLIENT_ID_UIID_KEYCLOAK}/roles/${role}`,
+        `${this.keycloakUrl}/admin/realms/Booking/clients/${process.env.KEYCLOAK_CLIENT_ID_UUID}/roles/${role}`,
 
         {
           headers: {
@@ -92,10 +92,10 @@ export class KeycloakService {
     dataBody,
   ): Promise<any> {
     console.log(userId);
-    console.log(process.env.CLIENT_ID_UIID_KEYCLOAK);
+    console.log(process.env.KEYCLOAK_CLIENT_ID_UUID);
     try {
       const data = await axios.post(
-        `${this.keycloakUrl}/admin/realms/Booking/users/${userId}/role-mappings/clients/${process.env.CLIENT_ID_UIID_KEYCLOAK}`,
+        `${this.keycloakUrl}/admin/realms/Booking/users/${userId}/role-mappings/clients/${process.env.KEYCLOAK_CLIENT_ID_UUID}`,
         dataBody,
         {
           headers: {

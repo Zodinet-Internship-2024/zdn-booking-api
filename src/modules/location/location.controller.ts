@@ -26,7 +26,7 @@ export class LocationController {
 
   @Get()
   @Roles({
-    roles: [ROLE.USER],
+    roles: [ROLE.OWNER],
   })
   findAll() {
     return this.locationService.findAll();
