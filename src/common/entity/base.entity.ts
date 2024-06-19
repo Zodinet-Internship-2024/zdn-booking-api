@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { AutoMap } from '@automapper/classes';
-import { User } from 'src/modules/user/entities/user.entity';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -16,7 +17,11 @@ export class BaseEntity {
   id: string;
 
   @AutoMap()
-  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createdAt: Date;
 
   @AutoMap()
@@ -24,18 +29,20 @@ export class BaseEntity {
   updatedAt: Date;
 
   @AutoMap()
-  @Column({ name: 'deleted_at', type: 'timestamp', nullable: true })
+  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
   deletedAt: Date;
 
   @AutoMap()
   @Column({
+    type: 'uuid',
     name: 'created_by',
-    nullable: true,
+    nullable: false,
   })
   createdBy: string;
 
   @AutoMap()
   @Column({
+    type: 'uuid',
     name: 'updated_by',
     nullable: true,
   })
@@ -43,7 +50,9 @@ export class BaseEntity {
 
   @AutoMap()
   @Column({
+    type: 'uuid',
     name: 'deleted_by',
+    nullable: true,
   })
   deletedBy: string;
 

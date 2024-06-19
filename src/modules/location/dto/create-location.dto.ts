@@ -2,9 +2,10 @@ import { AutoMap } from '@automapper/classes';
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateLocationDto {
+  @AutoMap()
   @IsOptional()
   @IsString()
-  sportFieldId?: string;
+  sportField?: string;
 
   @AutoMap()
   @IsOptional()

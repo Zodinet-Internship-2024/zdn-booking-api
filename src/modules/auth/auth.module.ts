@@ -5,8 +5,8 @@ import { UserModule } from '../user/user.module';
 import { AccountModule } from '../account/account.module';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Account } from '../account/entities/account.entity';
-import { User } from '../user/entities/user.entity';
+import { AccountEntity } from '../account/entities/account.entity';
+import { UserEntity } from '../user/entities/user.entity';
 import { KeycloakService } from './api/auth';
 
 @Module({
@@ -14,7 +14,7 @@ import { KeycloakService } from './api/auth';
   providers: [AuthService, KeycloakService],
   imports: [
     UserModule,
-    TypeOrmModule.forFeature([Account, User]),
+    TypeOrmModule.forFeature([AccountEntity, UserEntity]),
     AccountModule,
     UserModule,
   ],

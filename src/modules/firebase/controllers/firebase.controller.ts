@@ -29,13 +29,18 @@ export class FirebaseController {
       throw new HttpException('No file provided', HttpStatus.BAD_REQUEST);
     }
     console.log('file', file);
-    const res = await this.firebaseService.uploadFile(file, 'avatars');
+    const res = await this.firebaseService.uploadImage(file, 'avatars');
     return res;
   }
 
-  // @Post('upload-avatar')
-  // async uploadFile(@Request() file: any) {
-  //   console.log('file', file);
-  //   return file.body;
-  // }
+  @Post('upload-sport-field-image')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadSportFieldImage(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new HttpException('No file provided', HttpStatus.BAD_REQUEST);
+    }
+    console.log('file', file);
+    const res = await this.firebaseService.uploadImage(file, 'sport-fields');
+    return res;
+  }
 }

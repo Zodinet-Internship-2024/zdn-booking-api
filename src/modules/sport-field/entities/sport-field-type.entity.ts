@@ -1,12 +1,14 @@
 import { BaseEntity } from 'src/common/entity/base.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
-import { SportField } from './sport-field.entity';
+import { SportFieldEntity } from './sport-field.entity';
+import { AutoMap } from '@automapper/classes';
 
-@Entity()
-export class SportFieldType extends BaseEntity {
+@Entity('sport_field_type')
+export class SportFieldTypeEntity extends BaseEntity {
+  @AutoMap()
   @Column({ nullable: false })
   name: string;
 
-  @OneToMany(() => SportField, (sportField) => sportField.sportFieldType)
-  sportFields: SportField[];
+  @OneToMany(() => SportFieldEntity, (sportField) => sportField.sportFieldType)
+  sportFields: SportFieldEntity[];
 }

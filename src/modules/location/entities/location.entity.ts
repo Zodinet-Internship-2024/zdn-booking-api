@@ -1,32 +1,32 @@
 import { BaseEntity } from 'src/common/entity/base.entity';
-import { SportField } from 'src/modules/sport-field/entities/sport-field.entity';
+import { SportFieldEntity } from 'src/modules/sport-field/entities/sport-field.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
-import { District } from './district.entity';
-import { Province } from './province.entity';
-import { Ward } from './ward.entity';
+import { DistrictEntity } from './district.entity';
+import { ProvinceEntity } from './province.entity';
+import { WardEntity } from './ward.entity';
 import { AutoMap } from '@automapper/classes';
 
-@Entity({ synchronize: true })
-export class Location extends BaseEntity {
+@Entity('location')
+export class LocationEntity extends BaseEntity {
   @AutoMap()
-  @OneToOne(() => SportField, (sportField) => sportField.location)
+  @OneToOne(() => SportFieldEntity, (sportField) => sportField.location)
   @JoinColumn({ name: 'sport_field_id' })
-  sportField: SportField;
+  sportField: SportFieldEntity;
 
   @AutoMap()
-  @ManyToOne(() => Province, (province) => province.locations)
+  @ManyToOne(() => ProvinceEntity, (province) => province.locations)
   @JoinColumn({ name: 'provice_id' })
-  province: Province;
+  province: ProvinceEntity;
 
   @AutoMap()
-  @ManyToOne(() => District, (district) => district.locations)
+  @ManyToOne(() => DistrictEntity, (district) => district.locations)
   @JoinColumn({ name: 'district_id' })
-  district: District;
+  district: DistrictEntity;
 
   @AutoMap()
-  @ManyToOne(() => Ward, (ward) => ward.locations)
+  @ManyToOne(() => WardEntity, (ward) => ward.locations)
   @JoinColumn({ name: 'ward_id' })
-  ward: Ward;
+  ward: WardEntity;
 
   @Column({ name: 'address_detail', type: 'character varying', length: 64 })
   addressDetail: string;

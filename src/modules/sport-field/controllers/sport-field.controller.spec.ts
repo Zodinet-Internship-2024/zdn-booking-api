@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SportFieldController } from './sport-field.controller';
-import { SportFieldService } from './sport-field.service';
+import { SportFieldService } from '../services/sport-field.service';
 
 describe('SportFieldController', () => {
   let controller: SportFieldController;

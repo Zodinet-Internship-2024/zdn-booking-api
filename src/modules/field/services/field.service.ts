@@ -1,40 +1,63 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@nestjs/common';
-import { Mapper } from '@automapper/core';
-import { InjectMapper } from '@automapper/nestjs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectMapper } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
+import { IsNull, Not, Repository } from 'typeorm';
+import { BaseService } from 'src/common/service/base.service';
 
+import { FieldEntity } from '../entities/field.entity';
 import { CreateFieldDto } from '../dto/create-field.dto';
-import { UpdateFieldDto } from '../dto/update-field.dto';
 import { ReadFieldDto } from '../dto/read-field.dto';
-import { Field } from '../entities/field.entity';
+import { UpdateFieldDto } from '../dto/update-field.dto';
 
 @Injectable()
-export class FieldService {
+export class FieldService extends BaseService<FieldEntity> {
   constructor(
-    @InjectRepository(Field)
-    private readonly fieldRepository: Repository<Field>,
-    @InjectMapper() private readonly mapper: Mapper,
-  ) {}
-
-  create(createFieldDto: CreateFieldDto) {
-    return 'This action adds a new field';
+    @InjectRepository(FieldEntity)
+    private readonly fieldRepository: Repository<FieldEntity>,
+    @InjectMapper()
+    public readonly mapper: Mapper,
+  ) {
+    super(fieldRepository);
   }
 
-  findAll() {
-    return `This action returns all field`;
+  async createField(createFieldDto: CreateFieldDto): Promise<ReadFieldDto> {
+    const field = this.mapper.map(createFieldDto, CreateFieldDto, FieldEntity);
+    const createdField = await this.create(field);
+    return this.mapper.map(createdField, FieldEntity, ReadFieldDto);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} field`;
+  async findFieldsBySportField(sportFieldId: string): Promise<ReadFieldDto[]> {
+    const fields = await this.fieldRepository.find({
+      where: { sportField: { id: sportFieldId } },
+    });
+    return this.mapper.mapArray(fields, FieldEntity, ReadFieldDto);
   }
 
-  update(id: number, updateFieldDto: UpdateFieldDto) {
-    return `This action updates a #${id} field`;
+  async updateField(
+    id: string,
+    updateFieldDto: UpdateFieldDto,
+  ): Promise<ReadFieldDto> {
+    const field = this.mapper.map(updateFieldDto, UpdateFieldDto, FieldEntity);
+    const updatedField = await this.update(
+      id,
+      { where: { id: id, deletedAt: IsNull() } },
+      field,
+    );
+    return this.mapper.map(updatedField, FieldEntity, ReadFieldDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} field`;
+  async deleteField(id: string): Promise<ReadFieldDto> {
+    const field = await this.findOne({
+      where: { id: id, deletedAt: IsNull() },
+    });
+    if (!field) {
+      return null;
+    }
+    const deletedField = await this.delete(id, {
+      where: { id: id, deletedAt: Not(IsNull()) },
+    });
+    return this.mapper.map(deletedField, FieldEntity, ReadFieldDto);
   }
 }

@@ -3,24 +3,24 @@ import { CreateLocationDto } from './dto/create-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Province } from './entities/province.entity';
-import { District } from './entities/district.entity';
-import { Ward } from './entities/ward.entity';
-import { Location } from './entities/location.entity';
+import { ProvinceEntity } from './entities/province.entity';
+import { DistrictEntity } from './entities/district.entity';
+import { WardEntity } from './entities/ward.entity';
+import { LocationEntity } from './entities/location.entity';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 
 @Injectable()
 export class LocationService {
   constructor(
-    @InjectRepository(Location)
-    private locationRepository: Repository<Location>,
-    @InjectRepository(Province)
-    private provinceRepository: Repository<Province>,
-    @InjectRepository(District)
-    private districtRepository: Repository<District>,
-    @InjectRepository(Ward)
-    private wardRepository: Repository<Ward>,
+    @InjectRepository(LocationEntity)
+    private locationRepository: Repository<LocationEntity>,
+    @InjectRepository(ProvinceEntity)
+    private provinceRepository: Repository<ProvinceEntity>,
+    @InjectRepository(DistrictEntity)
+    private districtRepository: Repository<DistrictEntity>,
+    @InjectRepository(WardEntity)
+    private wardRepository: Repository<WardEntity>,
     @InjectMapper() private readonly classMapper: Mapper,
   ) {}
 
@@ -29,11 +29,11 @@ export class LocationService {
       const entity = this.classMapper.map(
         createLocationDto,
         CreateLocationDto,
-        Location,
+        LocationEntity,
       );
       return this.classMapper.mapAsync(
         await this.locationRepository.save(entity),
-        Location,
+        LocationEntity,
         CreateLocationDto,
       );
     } catch (ex: any) {
@@ -41,7 +41,7 @@ export class LocationService {
     }
   }
 
-  private async findProvinceById(id: string): Promise<Province> {
+  private async findProvinceById(id: string): Promise<ProvinceEntity> {
     return this.provinceRepository.findOne({
       where: {
         id: id,
@@ -49,7 +49,7 @@ export class LocationService {
     });
   }
 
-  private async findDistrictById(id: string): Promise<District> {
+  private async findDistrictById(id: string): Promise<DistrictEntity> {
     return this.districtRepository.findOne({
       where: {
         id: id,
@@ -57,7 +57,7 @@ export class LocationService {
     });
   }
 
-  private async findWardById(id: string): Promise<Ward> {
+  private async findWardById(id: string): Promise<WardEntity> {
     return this.wardRepository.findOne({
       where: {
         id: id,
@@ -83,7 +83,7 @@ export class LocationService {
     const entity = this.classMapper.map(
       updateLocationDto,
       UpdateLocationDto,
-      Location,
+      LocationEntity,
     );
 
     const res = await this.locationRepository.update(

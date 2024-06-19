@@ -1,6 +1,7 @@
 import { Bucket } from '@google-cloud/storage';
 import { Inject, Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
+import { UploadImageDto } from 'src/common/dto/upload-image.dto';
 import { BaseResponse } from 'src/common/response/base.response';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -12,12 +13,12 @@ export class FirebaseService {
     this.bucket = this.firebaseApp.storage().bucket();
   }
 
-  async uploadFile(
+  async uploadImage(
     file: Express.Multer.File,
     folder: string,
   ): Promise<BaseResponse> {
     const uuid = uuidv4();
-    const fileRef = this.bucket.file(`${folder}/${uuid}${file.originalname}`);
+    const fileRef = this.bucket.file(`${folder}/${uuid}`);
     const blobStream = fileRef.createWriteStream({
       metadata: {
         contentType: file.mimetype,
@@ -30,11 +31,14 @@ export class FirebaseService {
         fileRef
           .makePublic()
           .then(() => {
-            const publicUrl = `${process.env.GOOGLE_API_HOST}${this.bucket.name}/${fileRef.name}`;
+            const image: UploadImageDto = {
+              name: file.originalname,
+              url: `${process.env.GOOGLE_API_HOST}${this.bucket.name}/${fileRef.name}`,
+            };
             resolve(
               new BaseResponse(
-                [publicUrl],
-                'File uploaded successfully',
+                [image],
+                'image_uploaded',
                 200,
                 new Date().toISOString(),
               ),

@@ -1,22 +1,24 @@
-import { IsDate, IsNotEmpty, IsString } from 'class-validator';
-
+import { AutoMap } from '@automapper/classes';
+import {
+  // IsDate,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 export class CreateFieldDto {
-  @IsString()
-  id: string;
-
+  @AutoMap()
   @IsString()
   @IsNotEmpty()
+  @MaxLength(255)
   name: string;
 
+  @AutoMap()
   @IsString()
   @IsNotEmpty()
-  sportFieldId: string;
+  sportField: string;
 
-  @IsDate()
-  @IsNotEmpty()
-  createAt: Date;
-
+  @AutoMap()
   @IsString()
   @IsNotEmpty()
-  createBy: string;
+  createdBy: string;
 }

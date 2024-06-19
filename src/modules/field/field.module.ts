@@ -3,10 +3,10 @@ import { FieldService } from './services/field.service';
 import { FieldController } from './controllers/field.controller';
 import { FieldProfile } from './profile/field.profile';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Field } from './entities/field.entity';
+import { FieldEntity } from './entities/field.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Field])],
+  imports: [TypeOrmModule.forFeature([FieldEntity])],
   controllers: [FieldController],
   providers: [FieldService, FieldProfile],
 })
