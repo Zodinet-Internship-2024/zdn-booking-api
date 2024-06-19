@@ -1,12 +1,18 @@
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
 import { Repository } from 'typeorm';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { User } from '../entities/user.entity';
 import { KeycloakService } from 'src/modules/auth/api/auth';
+import { ReadUserDTO } from '../dto/read-user-dto';
+import { CreateSocialUserDto } from '../dto/create-social-user.dto';
 
 @Injectable()
 export class UserService extends BaseService<User> {
@@ -53,5 +59,32 @@ export class UserService extends BaseService<User> {
       message: 'Updated successfully',
       data,
     };
+  }
+
+  async createSocialUser(
+    user: ReadUserDTO,
+    createSocialUserDto: CreateSocialUserDto,
+  ) {
+    console.log('🚀 ~ UserService ~ createSocialUserDto:', createSocialUserDto);
+    console.log('🚀 ~ UserService ~ user:', user);
+
+    const userExist = await this.userRepository.findOne({
+      where: [{ id: user.id }],
+    });
+
+    if (userExist) {
+      return userExist;
+    }
+    console.log('🚀 ~ UserService ~ userExist:', userExist);
+
+    try {
+      await this.userRepository.save({
+        ...user,
+        role: createSocialUserDto.role,
+      });
+    } catch (error) {
+      console.log('🚀 ~ UserService ~ error:', error);
+    }
+    return user;
   }
 }

@@ -33,7 +33,7 @@ export class User extends BaseEntity {
     type: 'character varying',
     length: 10,
     unique: true,
-    nullable: false,
+    nullable: true,
   })
   phone: string;
 
