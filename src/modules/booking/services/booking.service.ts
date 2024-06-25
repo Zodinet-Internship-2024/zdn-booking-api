@@ -22,6 +22,7 @@ import {
 import { CreateBookingDto } from '../dto/create-booking.dto';
 import { ReadBookingDto } from '../dto/read-booking.dto';
 import { BookingEntity, BookingStatus } from '../entities/booking.entity';
+import { ReadOwnerBookingDto } from '../dto/read-owner-booking.dto';
 
 @Injectable()
 export class BookingService extends BaseService<BookingEntity> {
@@ -81,26 +82,28 @@ export class BookingService extends BaseService<BookingEntity> {
     }
   }
 
-  async getBookingsByFieldId(
-    user: ReadUserDTO,
-    readBookingDto: ReadBookingDto,
-  ) {
-    this.validateFieldAccess(user.id, readBookingDto.fieldId);
-    const query = this.buildBaseQuery(readBookingDto);
-    this.applyStatusFilter(query, readBookingDto.status);
-    return query.getMany();
-  }
-
-  private buildBaseQuery(readBookingDto: ReadBookingDto) {
-    const { fieldId, startTime, endTime } = readBookingDto;
-    return this.bookingRepository
+  private buildBaseQuery(readBookingDto: ReadOwnerBookingDto | ReadBookingDto) {
+    const query = this.bookingRepository
       .createQueryBuilder('booking')
-      .innerJoinAndSelect('booking.field', 'field')
-      .where('field.id = :fieldId', { fieldId })
-      .andWhere("booking.startTime >= :startTime at time zone '-07'", {
-        startTime,
-      })
-      .andWhere("booking.endTime <= :endTime at time zone '-07'", { endTime });
+      .innerJoinAndSelect('booking.field', 'field');
+
+    if ('fieldId' in readBookingDto) {
+      query.where('field.id = :fieldId', {
+        fieldId: readBookingDto.fieldId,
+      });
+    }
+
+    if (readBookingDto.startTime && readBookingDto.endTime) {
+      query
+        .andWhere("booking.startTime >= :startTime at time zone '-07'", {
+          startTime: readBookingDto.startTime,
+        })
+        .andWhere("booking.endTime <= :endTime at time zone '-07'", {
+          endTime: readBookingDto.endTime,
+        });
+    }
+
+    return query;
   }
 
   private applyStatusFilter(
@@ -110,6 +113,25 @@ export class BookingService extends BaseService<BookingEntity> {
     if (status && status.length > 0) {
       query.andWhere('booking.status IN (:...status)', { status });
     }
+  }
+
+  async getBookingsByFieldId(
+    user: ReadUserDTO,
+    readBookingDto: ReadOwnerBookingDto,
+  ) {
+    this.validateFieldAccess(user.id, readBookingDto.fieldId);
+    const query = this.buildBaseQuery(readBookingDto);
+    this.applyStatusFilter(query, readBookingDto.status);
+    return query.getMany();
+  }
+
+  async getUserBooking(user: ReadUserDTO, readBookingDto: ReadBookingDto) {
+    const query = this.buildBaseQuery(readBookingDto);
+    query.andWhere('booking.createdBy = :userId', { userId: user.id });
+
+    this.applyStatusFilter(query, readBookingDto.status);
+
+    return query.getMany();
   }
 
   remove(id: number) {

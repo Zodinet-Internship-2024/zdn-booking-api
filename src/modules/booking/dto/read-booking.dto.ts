@@ -1,19 +1,8 @@
 import { Transform, Type } from 'class-transformer';
-import {
-  IsArray,
-  IsDate,
-  IsEnum,
-  IsNotEmpty,
-  IsOptional,
-  IsUUID,
-} from 'class-validator';
+import { IsArray, IsDate, IsEnum, IsOptional } from 'class-validator';
 import { BookingStatus } from '../entities/booking.entity';
 
 export class ReadBookingDto {
-  @IsUUID()
-  @IsNotEmpty()
-  fieldId: string;
-
   @IsDate()
   @Type(() => Date)
   startTime: Date;
