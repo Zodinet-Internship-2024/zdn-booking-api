@@ -6,7 +6,9 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseInterceptors,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { UpdateStatusBookingDto } from '../dto/update-status-booking.dto';
@@ -44,8 +46,12 @@ export class BookingController {
   }
 
   @Get()
-  getBookings(@Body() readBookingDto: ReadBookingDto) {
-    return this.bookingService.getBookings(readBookingDto);
+  getBookingsByFieldId(
+    @User() user: ReadUserDTO,
+    @Query(new ValidationPipe({ transform: true }))
+    readBookingDto: ReadBookingDto,
+  ) {
+    return this.bookingService.getBookingsByFieldId(user, readBookingDto);
   }
   @Get('/bookings-sports-field/:id')
   getBookingSportField(@Param('id') id: string) {

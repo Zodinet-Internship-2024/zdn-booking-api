@@ -1,14 +1,24 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
 import { FieldEntity } from 'src/modules/field/entities/field.entity';
 import { SportFieldEntity } from 'src/modules/sport-field/entities/sport-field.entity';
 import { UpdateStatusBookingDto } from '../dto/update-status-booking.dto';
 import { ReadUserDTO } from 'src/modules/user/dto/read-user-dto';
-import { In, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import {
+  In,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
 import { CreateBookingDto } from '../dto/create-booking.dto';
 import { ReadBookingDto } from '../dto/read-booking.dto';
 import { BookingEntity, BookingStatus } from '../entities/booking.entity';
@@ -52,13 +62,54 @@ export class BookingService extends BaseService<BookingEntity> {
     return newBooking;
   }
 
-  getBookings(readBookingDto: ReadBookingDto) {
-    return this.bookingRepository.find({
-      // where: {
-      //   field: { id: readBookingDto.fieldId },
-      //   startTime: MoreThanOrEqual(readBookingDto.startTime),
-      // },
+  private async validateFieldAccess(
+    userId: string,
+    fieldId: string,
+  ): Promise<void> {
+    const field = await this.fieldRepository.findOne({
+      where: { id: fieldId },
     });
+
+    if (!field) {
+      throw new NotFoundException('Field not found');
+    }
+
+    if (field.createdBy !== userId) {
+      throw new ForbiddenException(
+        'You do not have permission to view bookings',
+      );
+    }
+  }
+
+  async getBookingsByFieldId(
+    user: ReadUserDTO,
+    readBookingDto: ReadBookingDto,
+  ) {
+    this.validateFieldAccess(user.id, readBookingDto.fieldId);
+    const query = this.buildBaseQuery(readBookingDto);
+    this.applyStatusFilter(query, readBookingDto.status);
+    return query.getMany();
+  }
+
+  private buildBaseQuery(readBookingDto: ReadBookingDto) {
+    const { fieldId, startTime, endTime } = readBookingDto;
+    return this.bookingRepository
+      .createQueryBuilder('booking')
+      .innerJoinAndSelect('booking.field', 'field')
+      .where('field.id = :fieldId', { fieldId })
+      .andWhere("booking.startTime >= :startTime at time zone '-07'", {
+        startTime,
+      })
+      .andWhere("booking.endTime <= :endTime at time zone '-07'", { endTime });
+  }
+
+  private applyStatusFilter(
+    query: SelectQueryBuilder<BookingEntity>,
+    status?: string[],
+  ) {
+    if (status && status.length > 0) {
+      query.andWhere('booking.status IN (:...status)', { status });
+    }
   }
 
   remove(id: number) {
