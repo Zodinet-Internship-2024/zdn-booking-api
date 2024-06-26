@@ -20,6 +20,7 @@ import { CreateBookingDto } from '../dto/create-booking.dto';
 import { BookingService } from '../services/booking.service';
 import { ReadBookingDto } from '../dto/read-booking.dto';
 import { ReadOwnerBookingDto } from '../dto/read-owner-booking.dto';
+import { CreateOwnerBookingDto } from '../dto/create-owner-booking.dto';
 
 @Controller('booking')
 @ApiBearerAuth(API_BEARER_AUTH)
@@ -44,6 +45,17 @@ export class BookingController {
     @Body() createBookingDto: CreateBookingDto,
   ) {
     return this.bookingService.createBooking(user, createBookingDto);
+  }
+
+  @Post('owner')
+  createOwnerBooking(
+    @User() user: ReadUserDTO,
+    @Body() createOwnerBookingDto: CreateOwnerBookingDto,
+  ) {
+    return this.bookingService.createBookingByOwner(
+      user,
+      createOwnerBookingDto,
+    );
   }
 
   @Get()

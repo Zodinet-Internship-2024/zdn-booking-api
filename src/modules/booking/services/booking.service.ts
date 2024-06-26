@@ -26,6 +26,7 @@ import { ReadBookingDto } from '../dto/read-booking.dto';
 import { BookingEntity, BookingStatus } from '../entities/booking.entity';
 import { ReadOwnerBookingDto } from '../dto/read-owner-booking.dto';
 import { DateTimeHelper } from 'src/helpers/datetime.helper';
+import { CreateOwnerBookingDto } from '../dto/create-owner-booking.dto';
 
 @Injectable()
 export class BookingService extends BaseService<BookingEntity> {
@@ -102,29 +103,24 @@ export class BookingService extends BaseService<BookingEntity> {
     return !!booking;
   }
 
-  async createBooking(user: ReadUserDTO, createBookingDto: CreateBookingDto) {
-    const { fieldId, ...bookingDetails } = createBookingDto;
-    const field = await this.validateFieldExists(fieldId);
-
-    if (
-      await this.isBookingTimeInvalid(
-        fieldId,
-        bookingDetails.startTime,
-        bookingDetails.endTime,
-      )
-    ) {
+  async validateBookingTime(fieldId: string, startTime: Date, endTime: Date) {
+    if (await this.isBookingTimeInvalid(fieldId, startTime, endTime)) {
       throw new BadRequestException('Invalid booking time');
     }
 
-    if (
-      await this.hasBookingTime(
-        fieldId,
-        bookingDetails.startTime,
-        bookingDetails.endTime,
-      )
-    ) {
+    if (await this.hasBookingTime(fieldId, startTime, endTime)) {
       throw new ConflictException('There is a booking at this time');
     }
+  }
+
+  async createBooking(user: ReadUserDTO, createBookingDto: CreateBookingDto) {
+    const { fieldId, ...bookingDetails } = createBookingDto;
+    const field = await this.validateFieldExists(fieldId);
+    await this.validateBookingTime(
+      fieldId,
+      bookingDetails.startTime,
+      bookingDetails.endTime,
+    );
 
     const { id, ...userInfo } = user;
     const newBooking = await this.bookingRepository.save({
@@ -138,6 +134,33 @@ export class BookingService extends BaseService<BookingEntity> {
     });
 
     return newBooking;
+  }
+
+  async createBookingByOwner(
+    user: ReadUserDTO,
+    createBookingDto: CreateOwnerBookingDto,
+  ) {
+    const { fieldId, ...bookingDetails } = createBookingDto;
+    await this.validateFieldExists(fieldId);
+    await this.validateFieldAccess(user.id, fieldId);
+    await this.validateBookingTime(
+      fieldId,
+      bookingDetails.startTime,
+      bookingDetails.endTime,
+    );
+
+    const field = await this.fieldRepository.findOne({
+      where: { id: fieldId },
+    });
+    return await this.bookingRepository.save({
+      ...bookingDetails,
+      status: BookingStatus.BOOKING,
+      field,
+      fullName: createBookingDto.name,
+      phoneNumber: createBookingDto.phone,
+      createdBy: user.id,
+      updatedBy: user.id,
+    });
   }
 
   private async validateFieldAccess(
