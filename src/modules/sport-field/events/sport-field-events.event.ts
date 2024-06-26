@@ -20,6 +20,7 @@ export class CreateLocationEvent {
   constructor(
     public readonly sportFieldId: string,
     public readonly locationObj: any,
+    public readonly createdBy: string,
   ) {}
 }
 

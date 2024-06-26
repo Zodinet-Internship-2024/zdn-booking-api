@@ -65,15 +65,18 @@ export class SportFieldEntity extends BaseEntity {
   @JoinColumn({ name: 'owner_id' })
   owner: UserEntity;
 
+  @AutoMap()
   @OneToMany(
     () => SportFieldImageEntity,
     (sportFieldImage) => sportFieldImage.sportField,
   )
   sportFieldImages: SportFieldImageEntity[];
 
+  @AutoMap()
   @OneToOne(() => LocationEntity, (location) => location.sportField)
   location: LocationEntity;
 
+  @AutoMap()
   @OneToMany(() => FieldEntity, (field) => field.sportField)
   fields: FieldEntity[];
 }

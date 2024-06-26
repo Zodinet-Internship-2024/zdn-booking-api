@@ -7,9 +7,9 @@ import {
   MinLength,
 } from 'class-validator';
 import { AutoMap } from '@automapper/classes';
-import { UploadImageDto } from 'src/common/dto/upload-image.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { LocationEntity } from 'src/modules/location/entities/location.entity';
+import { UploadImageDto } from 'src/common/dto/upload-image.dto';
 
 export class CreateSportFieldDto {
   @AutoMap()
@@ -72,9 +72,10 @@ export class CreateSportFieldDto {
   @IsString()
   createdBy?: string;
 
+  @AutoMap()
   @ApiProperty()
   @IsOptional()
-  locationObj?: Partial<LocationEntity>;
+  location?: Partial<LocationEntity>;
 
   @ApiProperty()
   @IsOptional()

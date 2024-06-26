@@ -28,7 +28,6 @@ export class FirebaseController {
     if (!file) {
       throw new HttpException('No file provided', HttpStatus.BAD_REQUEST);
     }
-    console.log('file', file);
     const res = await this.firebaseService.uploadImage(file, 'avatars');
     return res;
   }
@@ -39,7 +38,6 @@ export class FirebaseController {
     if (!file) {
       throw new HttpException('No file provided', HttpStatus.BAD_REQUEST);
     }
-    console.log('file', file);
     const res = await this.firebaseService.uploadImage(file, 'sport-fields');
     return res;
   }

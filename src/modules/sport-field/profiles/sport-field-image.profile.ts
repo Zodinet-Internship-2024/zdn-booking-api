@@ -20,7 +20,7 @@ export class SportFieldImageProfile extends AutomapperProfile {
         SportFieldImageEntity,
         ReadSportFieldImageDto,
         forMember(
-          (destination) => destination.sportField,
+          (destination) => destination.sportFieldId,
           mapFrom((source) => {
             if (source.sportField) {
               return source.sportField.id;
@@ -36,8 +36,8 @@ export class SportFieldImageProfile extends AutomapperProfile {
         forMember(
           (destination) => destination.sportField.id,
           mapFrom((source) => {
-            if (source.sportField) {
-              return source.sportField;
+            if (source.sportFieldId) {
+              return source.sportFieldId;
             }
             return undefined;
           }),

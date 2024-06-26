@@ -5,7 +5,7 @@ import { UploadImageDto } from 'src/common/dto/upload-image.dto';
 export class CreateSportFieldImageDto extends UploadImageDto {
   @AutoMap()
   @IsString()
-  sportField: string;
+  sportFieldId: string;
 
   @AutoMap()
   @IsString()

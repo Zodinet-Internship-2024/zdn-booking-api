@@ -36,8 +36,9 @@ export class BookingController {
   updateStatusBookings(
     @Param('id') id: string,
     @Body() data: UpdateStatusBookingDto,
+    @User() user: ReadUserDTO,
   ) {
-    return this.bookingService.updateStatusBooking(id, data);
+    return this.bookingService.updateStatusBooking(id, data, user);
   }
   @Post()
   create(
@@ -79,5 +80,9 @@ export class BookingController {
   @Get('/bookings-sports-field/:id')
   getBookingSportField(@Param('id') id: string) {
     return this.bookingService.getBookingsBySportFieldId(id);
+  }
+  @Delete(':id')
+  removeBooking(@Param('id') id: string, @User() user: ReadUserDTO) {
+    return this.bookingService.remove(id, user);
   }
 }

@@ -67,7 +67,7 @@ export class LocationService {
 
   async findAll() {
     const res = await this.locationRepository.find();
-    return res ? res : 'No location found!';
+    return res ? res : null;
   }
 
   async findOne(id: string) {
@@ -79,18 +79,18 @@ export class LocationService {
     return res ? res : 'Location not found!';
   }
 
-  async update(id: string, updateLocationDto: UpdateLocationDto) {
-    const entity = this.classMapper.map(
-      updateLocationDto,
-      UpdateLocationDto,
-      LocationEntity,
-    );
+  async update(id: string, updateLocationDto: Partial<UpdateLocationDto>) {
+    // const entity = this.classMapper.map(
+    //   updateLocationDto,
+    //   UpdateLocationDto,
+    //   LocationEntity,
+    // );
 
     const res = await this.locationRepository.update(
       {
         id: id,
       },
-      entity,
+      updateLocationDto,
     );
 
     return res.affected > 0
@@ -99,7 +99,7 @@ export class LocationService {
             id: id,
           },
         })
-      : 'Location not found!';
+      : null;
   }
 
   async remove(id: string) {
@@ -119,7 +119,7 @@ export class LocationService {
       },
     });
 
-    return res ? res : 'No district found!';
+    return res;
   }
 
   async findByProvince(id: string) {
@@ -129,7 +129,7 @@ export class LocationService {
       },
     });
 
-    return res ? res : 'No province found!';
+    return res;
   }
 
   async findByWard(id: string) {
@@ -139,21 +139,18 @@ export class LocationService {
       },
     });
 
-    return res ? res : 'No ward found!';
+    return res;
   }
 
   async findAllProvince() {
-    const res = await this.provinceRepository.find();
-    return res ? res : 'No province found!';
+    return await this.provinceRepository.find();
   }
 
   async findAllDistrict() {
-    const res = await this.districtRepository.find();
-    return res ? res : 'No district found!';
+    return await this.districtRepository.find();
   }
 
   async findAllWard() {
-    const res = await this.wardRepository.find();
-    return res ? res : 'No ward found!';
+    return await this.wardRepository.find();
   }
 }

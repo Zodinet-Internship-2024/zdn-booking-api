@@ -34,7 +34,7 @@ export class SportFieldEventListeners {
   @OnEvent('create.sportFieldImage')
   async handleCreateSportFieldImageEvent(event: CreateSportFieldImageEvent) {
     const image = await this.sportFieldImageService.createSportFieldImage({
-      sportField: event.sportFieldId,
+      sportFieldId: event.sportFieldId,
       ...event.image,
       createdBy: event.createdBy,
     });
@@ -46,8 +46,9 @@ export class SportFieldEventListeners {
   @OnEvent('create.location')
   async handleCreateLocationEvent(event: CreateLocationEvent) {
     const location = await this.locationService.create({
-      sportField: event.sportFieldId,
+      sportFieldId: event.sportFieldId,
       ...event.locationObj,
+      createdBy: event.createdBy,
     });
     if (!location) {
       throw new BadRequestException('location_not_created');

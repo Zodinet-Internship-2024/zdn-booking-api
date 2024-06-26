@@ -14,14 +14,18 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const request = ctx.getRequest();
 
     // Handle any exception
-    const message = 'Something went wrong';
+    const message =
+      response.message || exception instanceof Error
+        ? exception.message
+        : 'Internal server error.';
+
     const exceptionResponse = new BaseResponse(
       null,
       exception?.response?.message || exception.message || message,
       exception instanceof HttpException ? exception.getStatus() : 500,
       new Date().toISOString(),
     );
-    console.log('Exception: ', exceptionResponse, request.url);
+    console.log('Exception all: ', exceptionResponse, request.url);
 
     response.status(500).json(exceptionResponse);
   }

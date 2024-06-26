@@ -16,7 +16,7 @@ export class FirebaseService {
   async uploadImage(
     file: Express.Multer.File,
     folder: string,
-  ): Promise<BaseResponse> {
+  ): Promise<BaseResponse<UploadImageDto>> {
     const uuid = uuidv4();
     const fileRef = this.bucket.file(`${folder}/${uuid}`);
     const blobStream = fileRef.createWriteStream({
@@ -37,7 +37,7 @@ export class FirebaseService {
             };
             resolve(
               new BaseResponse(
-                [image],
+                image,
                 'image_uploaded',
                 200,
                 new Date().toISOString(),

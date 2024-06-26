@@ -4,8 +4,6 @@ import { config as dotenvConfig } from 'dotenv';
 
 dotenvConfig({ path: '.env' });
 
-// console.log('seedingConfig', config);
-
 const seedingConfig = {
   ...config,
   seeds: ['src/database/seeds/**/*.ts'],

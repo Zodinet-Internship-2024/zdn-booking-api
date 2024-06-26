@@ -10,7 +10,6 @@ export abstract class BaseService<T> {
       const createdEntity = await this.repository.save(entity);
       return createdEntity;
     } catch (error: any) {
-      console.log('error', error);
       throw new BadRequestException(error.message);
     }
   }

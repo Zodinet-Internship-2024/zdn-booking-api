@@ -15,6 +15,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from 'nest-keycloak-connect';
 import { CreateSportFieldImageDto } from '../../dto/sport-field-image/create-sport-field-image.dto';
 import { BaseResponse } from 'src/common/response/base.response';
+import { ReadSportFieldImageDto } from '../../dto/sport-field-image/read-sport-field-image.dto';
 
 @ApiTags('sport-field-image')
 @ApiBearerAuth(API_BEARER_AUTH)
@@ -26,7 +27,9 @@ export class SportFieldImageController {
   ) {}
 
   @Get('all')
-  async findAllSportFieldImages(): Promise<BaseResponse> {
+  async findAllSportFieldImages(): Promise<
+    BaseResponse<ReadSportFieldImageDto>
+  > {
     const res = await this.sportFieldImageService.findAllSportFieldImages();
     if (res.length === 0) {
       throw new NotFoundException('sport_field_image_not_found');
@@ -42,7 +45,7 @@ export class SportFieldImageController {
   @Get('sport-field/:sportFieldId')
   async findSportFieldImagesBySportFieldId(
     @Param('sportFieldId') sportFieldId: string,
-  ): Promise<BaseResponse> {
+  ): Promise<BaseResponse<ReadSportFieldImageDto>> {
     const res =
       await this.sportFieldImageService.findSportFieldImagesBySportFieldId(
         sportFieldId,
@@ -61,7 +64,7 @@ export class SportFieldImageController {
   @Get(':id')
   async findSportFieldImageById(
     @Param('id') id: string,
-  ): Promise<BaseResponse> {
+  ): Promise<BaseResponse<ReadSportFieldImageDto>> {
     const res = await this.sportFieldImageService.findSportFieldImageById(id);
     if (!res) {
       throw new NotFoundException('sport_field_image_not_found');
@@ -77,7 +80,7 @@ export class SportFieldImageController {
   @Post()
   async createSportFieldImage(
     @Body() createSportFieldImageDto: CreateSportFieldImageDto,
-  ): Promise<BaseResponse> {
+  ): Promise<BaseResponse<ReadSportFieldImageDto>> {
     const res = await this.sportFieldImageService.createSportFieldImage(
       createSportFieldImageDto,
     );
@@ -85,7 +88,7 @@ export class SportFieldImageController {
       throw new BadRequestException('sport_field_image_not_created');
     }
     return new BaseResponse(
-      [res],
+      res,
       'sport_field_image_created',
       201,
       new Date().toString(),
@@ -96,7 +99,7 @@ export class SportFieldImageController {
   async updateSportFieldImage(
     @Param('id') id: string,
     @Body() updateSportFieldImageDto: CreateSportFieldImageDto,
-  ): Promise<BaseResponse> {
+  ): Promise<BaseResponse<ReadSportFieldImageDto>> {
     const res = await this.sportFieldImageService.updateSportFieldImage(
       id,
       updateSportFieldImageDto,
@@ -105,7 +108,7 @@ export class SportFieldImageController {
       throw new BadRequestException('sport_field_image_update_failed');
     }
     return new BaseResponse(
-      [res],
+      res,
       'sport_field_image_updated',
       200,
       new Date().toString(),
@@ -113,13 +116,15 @@ export class SportFieldImageController {
   }
 
   @Delete('delete/:id')
-  async deleteSportFieldImage(@Param('id') id: string): Promise<BaseResponse> {
+  async deleteSportFieldImage(
+    @Param('id') id: string,
+  ): Promise<BaseResponse<ReadSportFieldImageDto>> {
     const res = await this.sportFieldImageService.deleteSportFieldImage(id);
     if (!res) {
       throw new BadRequestException('sport_field_image_delete_failed');
     }
     return new BaseResponse(
-      [res],
+      res,
       'sport_field_image_deleted',
       200,
       new Date().toString(),

@@ -15,26 +15,49 @@ export class SportFieldProfile extends AutomapperProfile {
 
   override get profile() {
     return (mapper) => {
-      createMap(mapper, SportFieldEntity, ReadSportFieldDto);
+      createMap(
+        mapper,
+        SportFieldEntity,
+        ReadSportFieldDto,
+        forMember(
+          (destination) => destination.fieldIds,
+          mapFrom((source) =>
+            source.fields?.map((field) => {
+              if (field instanceof Object) {
+                return field.id;
+              }
+              return field;
+            }),
+          ),
+        ),
+        forMember(
+          (destination) => destination.sportFieldImages,
+          mapFrom((source) => source.sportFieldImages),
+        ),
+        forMember(
+          (destination) => destination.location,
+          mapFrom((source) => source.location),
+        ),
+      );
+      createMap(mapper, CreateSportFieldDto, SportFieldEntity);
+      createMap(mapper, UpdateSportFieldDto, SportFieldEntity);
       createMap(
         mapper,
         SportFieldEntity,
         GetSportFieldDto,
         forMember(
-          (des) => des.sportFieldImages,
-          mapFrom((src) => src.sportFieldImages),
+          (destination) => destination.sportFieldType,
+          mapFrom((source) => source.sportFieldType),
         ),
         forMember(
-          (des) => des.location,
-          mapFrom((src) => src.location),
+          (destination) => destination.sportFieldImages,
+          mapFrom((source) => source.sportFieldImages),
         ),
         forMember(
-          (des) => des.sportFieldType,
-          mapFrom((src) => src.sportFieldType),
+          (destination) => destination.location,
+          mapFrom((source) => source.location),
         ),
       );
-      createMap(mapper, CreateSportFieldDto, SportFieldEntity);
-      createMap(mapper, UpdateSportFieldDto, SportFieldEntity);
     };
   }
 }

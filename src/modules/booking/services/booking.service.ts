@@ -232,14 +232,38 @@ export class BookingService extends BaseService<BookingEntity> {
     return query.getMany();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} booking`;
+  async remove(id: string, user: ReadUserDTO) {
+    const booking = await this.bookingRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        field: true,
+      },
+    });
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+    if (booking.field.createdBy !== user.id) {
+      throw new ForbiddenException(
+        'You do not have permission to delete this booking',
+      );
+    }
+    booking.deletedBy = user.id;
+    await this.bookingRepository.save(booking);
+    await this.bookingRepository.softDelete(id);
+
+    return {
+      statusCode: 200,
+      status: 'Success',
+      message: 'Deleted successfully',
+    };
   }
   async removeBookingOfSportField(id: string, user: ReadUserDTO) {
     const sportField = await this.sportFieldRepository.find({
       where: { id: id },
     });
-    console.log('123zczx', sportField);
+
     if (sportField.length === 0) {
       return {
         statusCode: 404,
@@ -255,14 +279,6 @@ export class BookingService extends BaseService<BookingEntity> {
           'You do not have permission to delete  bookings of this  sport field',
       };
     }
-    // const a = await this.bookingRepository
-    //   .createQueryBuilder('booking')
-    //   .innerJoinAndSelect('booking.field', 'field')
-    //   .innerJoinAndSelect('field.sportField', 'sportField')
-    //   .delete()
-    //   .from(BookingEntity)
-    //   .where('sportField.id = :sportFieldId', { sportFieldId: id })
-    //   .execute();
     const fields = await this.fieldRepository.find({
       where: { sportField: { id: id } },
     });
@@ -299,18 +315,34 @@ export class BookingService extends BaseService<BookingEntity> {
     const bookings = await this.bookingRepository.find({
       where: { field: { id: In(fieldIds) } },
     });
-    console.log(bookings);
+
     return bookings;
   }
-  async updateStatusBooking(id: string, data: UpdateStatusBookingDto) {
+  async updateStatusBooking(
+    id: string,
+    data: UpdateStatusBookingDto,
+    user: ReadUserDTO,
+  ) {
     const booking = await this.bookingRepository.findOne({
-      where: { id: id },
+      where: {
+        id,
+      },
+      relations: {
+        field: true,
+      },
     });
     if (!booking) {
       return {
         statusCode: 404,
         status: 'Error',
         message: 'Booking not exists',
+      };
+    }
+    if (booking.field.createdBy !== user.id) {
+      return {
+        statusCode: 403,
+        status: 'Error',
+        message: 'You do not have permission to update this booking',
       };
     }
     await this.bookingRepository.update(id, data);

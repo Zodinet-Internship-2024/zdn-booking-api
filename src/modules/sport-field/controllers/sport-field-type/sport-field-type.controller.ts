@@ -13,6 +13,7 @@ import { API_BEARER_AUTH } from 'src/constants/constants';
 import { BaseResponse } from 'src/common/response/base.response';
 import { SportFieldTypeService } from '../../services/sport-field-type/sport-field-type.service';
 import { CreateSportFieldTypeDto } from '../../dto/sport-field-type/create-sport-field-type.dto';
+import { ReadSportFieldDto } from '../../dto/read-sport-field.dto';
 
 @ApiTags('sport-field-type')
 @ApiBearerAuth(API_BEARER_AUTH)
@@ -24,7 +25,7 @@ export class SportFieldTypeController {
   @Post()
   async createSportFieldType(
     @Body() createSportFieldTypeDto: CreateSportFieldTypeDto,
-  ): Promise<BaseResponse> {
+  ): Promise<BaseResponse<ReadSportFieldDto>> {
     const res = await this.sportFieldTypeSerive.createSportFieldType(
       createSportFieldTypeDto,
     );
@@ -40,7 +41,7 @@ export class SportFieldTypeController {
   }
 
   @Get()
-  async getAllSportFieldType(): Promise<BaseResponse> {
+  async getAllSportFieldType(): Promise<BaseResponse<ReadSportFieldDto>> {
     const res = await this.sportFieldTypeSerive.findAllSportFieldType();
     if (!res) {
       throw new NotFoundException('sport_field_type_not_found');

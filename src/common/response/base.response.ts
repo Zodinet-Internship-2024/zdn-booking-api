@@ -1,11 +1,11 @@
-export class BaseResponse {
+export class BaseResponse<T> {
   data: any | any[] | null;
   message: string;
   statusCode: number;
   timestamp: string;
 
   constructor(
-    data: any[],
+    data: T[] | T | null,
     message: string,
     statusCode: number,
     timestamp: string,

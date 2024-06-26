@@ -29,7 +29,9 @@ export class FieldController {
   constructor(private readonly fieldService: FieldService) {}
 
   @Post()
-  async create(@Body() createFieldDto: CreateFieldDto): Promise<BaseResponse> {
+  async create(
+    @Body() createFieldDto: CreateFieldDto,
+  ): Promise<BaseResponse<ReadFieldDto>> {
     const field: ReadFieldDto =
       await this.fieldService.createField(createFieldDto);
 
@@ -37,16 +39,13 @@ export class FieldController {
       throw new BadRequestException('field_create_failed');
     }
 
-    return new BaseResponse(
-      [field],
-      'field_created',
-      201,
-      new Date().toString(),
-    );
+    return new BaseResponse(field, 'field_created', 201, new Date().toString());
   }
 
   @Get()
-  async findAll(@User() user: ReadUserDTO): Promise<BaseResponse> {
+  async findAll(
+    @User() user: ReadUserDTO,
+  ): Promise<BaseResponse<ReadFieldDto>> {
     console.log(user);
     const fields = await this.fieldService.findAll();
 
@@ -63,7 +62,7 @@ export class FieldController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<BaseResponse> {
+  async findOne(@Param('id') id: string): Promise<BaseResponse<ReadFieldDto>> {
     const field: ReadFieldDto = await this.fieldService.findFieldById(id);
 
     if (!field) {
@@ -71,7 +70,7 @@ export class FieldController {
     }
 
     return new BaseResponse(
-      [field],
+      field,
       'field_retrieved',
       200,
       new Date().toString(),
@@ -81,7 +80,7 @@ export class FieldController {
   @Get('sport-field/:sportFieldId')
   async findFieldsBySportField(
     @Param('sportFieldId') sportFieldId: string,
-  ): Promise<BaseResponse> {
+  ): Promise<BaseResponse<ReadFieldDto>> {
     const fields: ReadFieldDto[] =
       await this.fieldService.findFieldsBySportField(sportFieldId);
 
@@ -102,7 +101,7 @@ export class FieldController {
     @Param('id') id: string,
     @Body() updateFieldDto: Partial<UpdateFieldDto>,
     @User() user: ReadUserDTO,
-  ): Promise<BaseResponse> {
+  ): Promise<BaseResponse<ReadFieldDto>> {
     updateFieldDto.updatedBy = user.id;
     const field: ReadFieldDto = await this.fieldService.updateField(
       id,
@@ -113,27 +112,19 @@ export class FieldController {
       throw new BadRequestException('field_update_failed');
     }
 
-    return new BaseResponse(
-      [field],
-      'field_updated',
-      200,
-      new Date().toString(),
-    );
+    return new BaseResponse(field, 'field_updated', 200, new Date().toString());
   }
 
   @Delete(':id')
-  async softDelete(@Param('id') id: string): Promise<BaseResponse> {
+  async softDelete(
+    @Param('id') id: string,
+  ): Promise<BaseResponse<ReadFieldDto>> {
     const field: ReadFieldDto = await this.fieldService.deleteField(id);
 
     if (!field) {
       throw new BadRequestException('field_delete_failed');
     }
 
-    return new BaseResponse(
-      [field],
-      'field_deleted',
-      200,
-      new Date().toString(),
-    );
+    return new BaseResponse(field, 'field_deleted', 200, new Date().toString());
   }
 }
