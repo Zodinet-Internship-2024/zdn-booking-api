@@ -2,6 +2,8 @@
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import {
+  BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -23,6 +25,7 @@ import { CreateBookingDto } from '../dto/create-booking.dto';
 import { ReadBookingDto } from '../dto/read-booking.dto';
 import { BookingEntity, BookingStatus } from '../entities/booking.entity';
 import { ReadOwnerBookingDto } from '../dto/read-owner-booking.dto';
+import { DateTimeHelper } from 'src/helpers/datetime.helper';
 
 @Injectable()
 export class BookingService extends BaseService<BookingEntity> {
@@ -39,20 +42,94 @@ export class BookingService extends BaseService<BookingEntity> {
     super(bookingRepository);
   }
 
-  async createBooking(user: ReadUserDTO, createBookingDto: CreateBookingDto) {
+  private async validateFieldExists(fieldId: string): Promise<FieldEntity> {
     const field = await this.fieldRepository.findOne({
-      where: { id: createBookingDto.fieldId },
+      where: { id: fieldId },
     });
-
     if (!field) {
       throw new NotFoundException('Field not found');
     }
+    return field;
+  }
+
+  async isBookingTimeInvalid(fieldId: string, startTime: Date, endTime: Date) {
+    await this.validateFieldExists(fieldId);
+
+    const field = await this.fieldRepository.findOne({
+      where: { id: fieldId },
+      relations: {
+        sportField: true,
+      },
+    });
+
+    const sportField = field.sportField;
+    const startTimeString = new Date(startTime).toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h24',
+    });
+    const endTimeString = new Date(endTime).toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h24',
+    });
+
+    const compareStartTime = DateTimeHelper.compareTimes(
+      startTimeString,
+      sportField.startTime,
+    );
+
+    const compareEndTime = DateTimeHelper.compareTimes(
+      endTimeString,
+      sportField.endTime,
+    );
+    return compareStartTime === -1 || compareEndTime === 1;
+  }
+
+  async hasBookingTime(fieldId: string, startTime: Date, endTime: Date) {
+    const booking = await this.bookingRepository
+      .createQueryBuilder('booking')
+      .where('booking.field = :fieldId', { fieldId })
+      .andWhere(
+        "booking.startTime < :endTime at time zone '-07' AND booking.endTime > :startTime  at time zone '-07'",
+        {
+          startTime,
+          endTime,
+        },
+      )
+      .getOne();
+
+    return !!booking;
+  }
+
+  async createBooking(user: ReadUserDTO, createBookingDto: CreateBookingDto) {
+    const { fieldId, ...bookingDetails } = createBookingDto;
+    const field = await this.validateFieldExists(fieldId);
+
+    if (
+      await this.isBookingTimeInvalid(
+        fieldId,
+        bookingDetails.startTime,
+        bookingDetails.endTime,
+      )
+    ) {
+      throw new BadRequestException('Invalid booking time');
+    }
+
+    if (
+      await this.hasBookingTime(
+        fieldId,
+        bookingDetails.startTime,
+        bookingDetails.endTime,
+      )
+    ) {
+      throw new ConflictException('There is a booking at this time');
+    }
 
     const { id, ...userInfo } = user;
-
     const newBooking = await this.bookingRepository.save({
       ...userInfo,
-      ...createBookingDto,
+      ...bookingDetails,
       status: BookingStatus.BOOKING,
       field,
       fullName: user.name,
@@ -71,9 +148,7 @@ export class BookingService extends BaseService<BookingEntity> {
       where: { id: fieldId },
     });
 
-    if (!field) {
-      throw new NotFoundException('Field not found');
-    }
+    this.validateFieldExists(fieldId);
 
     if (field.createdBy !== userId) {
       throw new ForbiddenException(

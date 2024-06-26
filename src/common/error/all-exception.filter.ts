@@ -8,7 +8,7 @@ import { BaseResponse } from '../response/base.response';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  catch(exception: unknown, host: ArgumentsHost) {
+  catch(exception, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request = ctx.getRequest();
@@ -17,7 +17,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const message = 'Something went wrong';
     const exceptionResponse = new BaseResponse(
       null,
-      exception instanceof Error ? exception.message : message,
+      exception?.response?.message || exception.message || message,
       exception instanceof HttpException ? exception.getStatus() : 500,
       new Date().toISOString(),
     );
