@@ -98,6 +98,9 @@ export class BookingService extends BaseService<BookingEntity> {
           endTime,
         },
       )
+      .andWhere('booking.status = :status', {
+        status: BookingStatus.ACCEPTED,
+      })
       .getOne();
 
     return !!booking;
