@@ -23,4 +23,8 @@ export class DateTimeHelper {
       return 0;
     }
   }
+
+  static isInPast(time: Date) {
+    return new Date(time) < new Date();
+  }
 }

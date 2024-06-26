@@ -10,25 +10,25 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
+import { DateTimeHelper } from 'src/helpers/datetime.helper';
 import { FieldEntity } from 'src/modules/field/entities/field.entity';
 import { SportFieldEntity } from 'src/modules/sport-field/entities/sport-field.entity';
-import { UpdateStatusBookingDto } from '../dto/update-status-booking.dto';
 import { ReadUserDTO } from 'src/modules/user/dto/read-user-dto';
 import {
   In,
   LessThanOrEqual,
   MoreThanOrEqual,
-  Not, Repository,
+  Repository,
   SelectQueryBuilder,
 } from 'typeorm';
 import { CreateBookingDto } from '../dto/create-booking.dto';
-import { ReadBookingDto } from '../dto/read-booking.dto';
-import { BookingEntity, BookingStatus } from '../entities/booking.entity';
-import { ReadOwnerBookingDto } from '../dto/read-owner-booking.dto';
-import { DateTimeHelper } from 'src/helpers/datetime.helper';
 import { CreateOwnerBookingDto } from '../dto/create-owner-booking.dto';
-import { ReadBookingDateDTO } from '../dto/read-booking-date.dto';
 import { ReadingBookingCalendar } from '../dto/read-booking-calendar';
+import { ReadBookingDateDTO } from '../dto/read-booking-date.dto';
+import { ReadBookingDto } from '../dto/read-booking.dto';
+import { ReadOwnerBookingDto } from '../dto/read-owner-booking.dto';
+import { UpdateStatusBookingDto } from '../dto/update-status-booking.dto';
+import { BookingEntity, BookingStatus } from '../entities/booking.entity';
 
 @Injectable()
 export class BookingService extends BaseService<BookingEntity> {
@@ -109,12 +109,16 @@ export class BookingService extends BaseService<BookingEntity> {
   }
 
   async validateBookingTime(fieldId: string, startTime: Date, endTime: Date) {
-    if (await this.isBookingTimeInvalid(fieldId, startTime, endTime)) {
-      throw new BadRequestException('Invalid booking time');
-    }
+    // if (await this.isBookingTimeInvalid(fieldId, startTime, endTime)) {
+    //   throw new BadRequestException('Invalid booking time');
+    // }
 
     if (await this.hasBookingTime(fieldId, startTime, endTime)) {
       throw new ConflictException('There is a booking at this time');
+    }
+
+    if (DateTimeHelper.isInPast(startTime)) {
+      throw new BadRequestException('Invalid booking time');
     }
   }
 
@@ -128,17 +132,18 @@ export class BookingService extends BaseService<BookingEntity> {
     );
 
     const { id, ...userInfo } = user;
-    const newBooking = await this.bookingRepository.save({
-      ...userInfo,
-      ...bookingDetails,
-      status: BookingStatus.BOOKING,
-      field,
-      fullName: user.name,
-      createdBy: user.id,
-      updatedBy: user.id,
-    });
+    return 'ok';
+    // const newBooking = await this.bookingRepository.save({
+    //   ...userInfo,
+    //   ...bookingDetails,
+    //   status: BookingStatus.BOOKING,
+    //   field,
+    //   fullName: user.name,
+    //   createdBy: user.id,
+    //   updatedBy: user.id,
+    // });
 
-    return newBooking;
+    // return newBooking;
   }
 
   async createBookingByOwner(
