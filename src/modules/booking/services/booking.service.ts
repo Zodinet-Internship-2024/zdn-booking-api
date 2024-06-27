@@ -132,18 +132,17 @@ export class BookingService extends BaseService<BookingEntity> {
     );
 
     const { id, ...userInfo } = user;
-    return 'ok';
-    // const newBooking = await this.bookingRepository.save({
-    //   ...userInfo,
-    //   ...bookingDetails,
-    //   status: BookingStatus.BOOKING,
-    //   field,
-    //   fullName: user.name,
-    //   createdBy: user.id,
-    //   updatedBy: user.id,
-    // });
+    const newBooking = await this.bookingRepository.save({
+      ...userInfo,
+      ...bookingDetails,
+      status: BookingStatus.BOOKING,
+      field,
+      fullName: user.name,
+      createdBy: user.id,
+      updatedBy: user.id,
+    });
 
-    // return newBooking;
+    return newBooking;
   }
 
   async createBookingByOwner(
