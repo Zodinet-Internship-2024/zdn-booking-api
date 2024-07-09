@@ -3,7 +3,12 @@ import { BaseService } from 'src/common/service/base.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { NotificationEntity } from './entities/notification.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntitySubscriberInterface, InsertEvent, Repository } from 'typeorm';
+import {
+  EntitySubscriberInterface,
+  In,
+  InsertEvent,
+  Repository,
+} from 'typeorm';
 import { ReadUserDTO } from '../user/dto/read-user-dto';
 import { UserEntity } from '../user/entities/user.entity';
 import { Subject } from 'rxjs';
@@ -40,10 +45,12 @@ export class NotificationService
     if (this.allSubscribedUsers.has(addedEntity.receiver.id))
       this.allSubscribedUsers.get(addedEntity.receiver.id).eventSubject.next({
         data: {
+          id: addedEntity.id,
           title: addedEntity.title,
           description: addedEntity.description,
           metadata: addedEntity.metadata,
           isRead: addedEntity.isRead,
+          createdAt: addedEntity.createdAt,
         },
       } as MessageEvent);
   }
@@ -76,12 +83,9 @@ export class NotificationService
       }
     }
   }
-  async createNotification(
-    user: ReadUserDTO,
-    createNotificationDto: CreateNotificationDto,
-  ) {
+  async createNotification(createNotificationDto: CreateNotificationDto) {
     const findUser = await this.userRepository.findOne({
-      where: { id: user.id },
+      where: { id: createNotificationDto.receiverId },
     });
 
     if (!findUser) {
@@ -91,7 +95,7 @@ export class NotificationService
     const notification = {
       ...createNotificationDto,
       receiver: findUser,
-      createdBy: user.id,
+      createdBy: findUser.id,
     };
     return this.notificationRepository.save(notification);
   }
@@ -122,6 +126,13 @@ export class NotificationService
   async markAllAsRead(user: ReadUserDTO) {
     return this.notificationRepository.update(
       { receiver: { id: user.id } },
+      { isRead: true },
+    );
+  }
+
+  async markAsRead(user: ReadUserDTO, ids: string[]) {
+    return this.notificationRepository.update(
+      { id: In(ids), receiver: { id: user.id } },
       { isRead: true },
     );
   }

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class CreateNotificationDto {
   @IsString()
@@ -9,4 +9,7 @@ export class CreateNotificationDto {
   description: string;
 
   metadata: any;
+
+  @IsUUID()
+  receiverId: string;
 }

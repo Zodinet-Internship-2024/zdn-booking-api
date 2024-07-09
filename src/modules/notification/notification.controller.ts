@@ -19,6 +19,7 @@ import {
   PaginationParams,
 } from 'src/decorators/pagination.decorator';
 import { Public } from 'nest-keycloak-connect';
+import { MarkAsReadDto } from './dto/mark-as-read.dto';
 
 @Controller('notification')
 export class NotificationController {
@@ -39,14 +40,8 @@ export class NotificationController {
   }
 
   @Post()
-  create(
-    @User() user: ReadUserDTO,
-    @Body() createNotificationDto: CreateNotificationDto,
-  ) {
-    return this.notificationService.createNotification(
-      user,
-      createNotificationDto,
-    );
+  create(@Body() createNotificationDto: CreateNotificationDto) {
+    return this.notificationService.createNotification(createNotificationDto);
   }
 
   @Get('me')
@@ -60,9 +55,14 @@ export class NotificationController {
     );
   }
 
-  @Patch('me')
+  @Patch('me/all')
   markAllAsRead(@User() user: ReadUserDTO) {
     return this.notificationService.markAllAsRead(user);
+  }
+
+  @Patch('me')
+  markAsRead(@User() user: ReadUserDTO, @Body() markAsReadDto: MarkAsReadDto) {
+    return this.notificationService.markAsRead(user, markAsReadDto.ids);
   }
 
   @Get('me/unread/number')
