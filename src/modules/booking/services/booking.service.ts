@@ -70,16 +70,19 @@ export class BookingService extends BaseService<BookingEntity> {
     });
 
     const sportField = field.sportField;
-    const startTimeString = new Date(startTime).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hourCycle: 'h23',
-    });
-    const endTimeString = new Date(endTime).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hourCycle: 'h23',
-    });
+    // const startTimeString = new Date(startTime).toLocaleTimeString('en-US', {
+    //   hour: '2-digit',
+    //   minute: '2-digit',
+    //   hourCycle: 'h23',
+    // });
+    const startTimeString = DateTimeHelper.getTimeString(startTime);
+    // const endTimeString = new Date(endTime).toLocaleTimeString('en-US', {
+    //   hour: '2-digit',
+    //   minute: '2-digit',
+    //   hourCycle: 'h23',
+    // });
+
+    const endTimeString = DateTimeHelper.getTimeString(endTime);
 
     const compareStartTime = DateTimeHelper.compareTimes(
       startTimeString,
@@ -129,7 +132,7 @@ export class BookingService extends BaseService<BookingEntity> {
       null,
       'Booking time is valid',
       200,
-      new Date().toLocaleTimeString(),
+      DateTimeHelper.getTimeString(new Date()),
     );
   }
 

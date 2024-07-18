@@ -196,7 +196,7 @@ export class LocationService {
       );
 
       const data = response.data;
-      console.log(data);
+      console.log(data.resourceSets[0].resources);
 
       if (
         data &&
@@ -209,7 +209,9 @@ export class LocationService {
             return {
               name: resource.address.addressLine
                 ? resource.address.addressLine
-                : resource.address.formattedAddress,
+                : resource.address.locality
+                  ? resource.address.locality
+                  : resource.name,
               lat: resource.point.coordinates[0],
               lon: resource.point.coordinates[1],
               displayName: resource.address.formattedAddress,

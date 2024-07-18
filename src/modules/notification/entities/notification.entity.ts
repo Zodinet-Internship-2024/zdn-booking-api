@@ -23,6 +23,10 @@ export class NotificationEntity extends BaseEntity {
   receiver: UserEntity;
 
   @AutoMap()
+  @Column({ name: 'receiver_id', type: 'uuid' })
+  receiverId: string;
+
+  @AutoMap()
   @Column({ name: 'is_read', type: 'boolean', nullable: true, default: false })
   isRead: boolean;
 }

@@ -28,11 +28,21 @@ export class DateTimeHelper {
     return new Date(time) < new Date();
   }
 
-  static getTimeString(date: Date) {
-    return new Date(date).toLocaleTimeString('en-US', {
+  static getTimeString(date: Date): string {
+    const options: Intl.DateTimeFormatOptions = {
+      timeZone: 'Asia/Ho_Chi_Minh', // Ho Chi Minh City time zone (GMT+7)
       hour: '2-digit',
       minute: '2-digit',
-      hourCycle: 'h24',
-    });
+      hourCycle: 'h23',
+    };
+
+    return new Intl.DateTimeFormat('en-US', options).format(new Date(date));
   }
+  // static getTimeString(date: Date) {
+  //   return new Date(date).toLocaleTimeString('en-US', {
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //     hourCycle: 'h24',
+  //   });
+  // }
 }

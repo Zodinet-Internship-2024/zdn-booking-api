@@ -18,7 +18,7 @@ export class LocationEntity extends BaseEntity {
   sportField: SportFieldEntity;
 
   @AutoMap()
-  @Column({ name: 'province_id', type: 'uuid' })
+  @Column({ name: 'province_id' })
   provinceId: string;
 
   @AutoMap()
@@ -27,7 +27,7 @@ export class LocationEntity extends BaseEntity {
   province: ProvinceEntity;
 
   @AutoMap()
-  @Column({ name: 'district_id', type: 'uuid' })
+  @Column({ name: 'district_id' })
   districtId: string;
 
   @AutoMap()
@@ -36,7 +36,7 @@ export class LocationEntity extends BaseEntity {
   district: DistrictEntity;
 
   @AutoMap()
-  @Column({ name: 'ward_id', type: 'uuid' })
+  @Column({ name: 'ward_id', nullable: true })
   wardId: string;
 
   @AutoMap()
