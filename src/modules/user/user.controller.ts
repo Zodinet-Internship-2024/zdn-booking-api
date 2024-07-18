@@ -2,8 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  Patch,
   Post,
-  Put,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -22,11 +22,11 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  getProfile(@User() user: ReadUserDTO) {
-    return user;
+  async getProfile(@User() user: ReadUserDTO) {
+    return await this.userService.getProfile(user);
   }
 
-  @Put()
+  @Patch()
   updateProfile(
     @User() user: ReadUserDTO,
     @Body() newUserProfile: UpdateUserDto,

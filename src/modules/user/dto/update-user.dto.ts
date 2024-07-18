@@ -1,19 +1,19 @@
 import { AutoMap } from '@automapper/classes';
-import { IsNotEmpty, IsPhoneNumber, IsString, IsUrl } from 'class-validator';
+import { IsOptional, IsPhoneNumber, IsString, IsUrl } from 'class-validator';
 
 export class UpdateUserDto {
+  @IsOptional()
   @AutoMap()
   @IsUrl()
-  @IsNotEmpty()
-  imageUrl: string;
+  imageUrl?: string;
 
+  @IsOptional()
   @AutoMap()
   @IsString()
-  @IsNotEmpty()
-  name: string;
+  name?: string;
 
-  @IsPhoneNumber('VN')
-  @IsNotEmpty()
+  @IsOptional()
   @AutoMap()
-  phone: string;
+  @IsPhoneNumber('VN')
+  phone?: string;
 }

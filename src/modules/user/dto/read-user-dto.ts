@@ -1,4 +1,6 @@
 import { AutoMap } from '@automapper/classes';
+import { IsOptional } from 'class-validator';
+import { UserRole } from '../entities/user.entity';
 
 export class ReadUserDTO {
   @AutoMap()
@@ -12,4 +14,12 @@ export class ReadUserDTO {
 
   @AutoMap()
   phone: string;
+
+  @AutoMap()
+  @IsOptional()
+  imageUrl?: string;
+
+  @AutoMap()
+  @IsOptional()
+  role?: UserRole;
 }
