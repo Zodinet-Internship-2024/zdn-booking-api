@@ -14,10 +14,10 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { FirebaseService } from '../services/firebase.service';
 import { API_BEARER_AUTH } from 'src/constants/constants';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { Public } from 'nest-keycloak-connect';
+import { User } from 'src/decorators/user.decorator';
+import { ReadUserDTO } from 'src/modules/user/dto/read-user-dto';
 
 @Controller('firebase')
-@Public()
 @ApiBearerAuth(API_BEARER_AUTH)
 export class FirebaseController {
   constructor(private firebaseService: FirebaseService) {}
@@ -29,6 +29,7 @@ export class FirebaseController {
       throw new HttpException('No file provided', HttpStatus.BAD_REQUEST);
     }
     const res = await this.firebaseService.uploadImage(file, 'avatars');
+
     return res;
   }
 

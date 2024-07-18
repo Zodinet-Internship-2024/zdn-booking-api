@@ -1,6 +1,6 @@
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
 import { Repository } from 'typeorm';
@@ -20,6 +20,17 @@ export class UserService extends BaseService<UserEntity> {
     private readonly keycloakService: KeycloakService,
   ) {
     super(userRepository);
+  }
+
+  async getProfile(user: ReadUserDTO) {
+    const userExist = await this.userRepository.findOne({
+      where: [{ id: user.id }],
+    });
+    if (!userExist) {
+      throw new NotFoundException('User not exists');
+    }
+
+    return this.classMapper.map(userExist, UserEntity, ReadUserDTO);
   }
 
   async updateProfile(id: string, data: UpdateUserDto) {
