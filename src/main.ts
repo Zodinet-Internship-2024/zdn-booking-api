@@ -11,6 +11,7 @@ import { AllExceptionsFilter } from './common/error/all-exception.filter';
 const PORT = process.env.PORT || 5000;
 
 async function bootstrap() {
+  process.env.TZ = 'Asia/Ho_Chi_Minh';
   const app = await NestFactory.create(AppModule);
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.useGlobalPipes(new ValidationPipe());
